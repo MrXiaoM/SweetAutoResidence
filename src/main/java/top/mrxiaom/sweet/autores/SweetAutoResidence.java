@@ -1,5 +1,6 @@
 package top.mrxiaom.sweet.autores;
         
+import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.pluginbase.BukkitPlugin;
 import top.mrxiaom.pluginbase.EconomyHolder;
@@ -17,6 +18,7 @@ public class SweetAutoResidence extends BukkitPlugin {
                 .reconnectDatabaseWhenReloadConfig(false)
                 .vaultEconomy(true)
                 .scanIgnore("top.mrxiaom.sweet.autores.libs")
+                .libraries(true)
         );
     }
     @NotNull
@@ -24,6 +26,13 @@ public class SweetAutoResidence extends BukkitPlugin {
         return options.economy();
     }
 
+    @Override
+    protected void beforeLoad() {
+        MinecraftVersion.replaceLogger(getLogger());
+        MinecraftVersion.disableUpdateCheck();
+        MinecraftVersion.disableBStats();
+        MinecraftVersion.getVersion();
+    }
 
     @Override
     protected void afterEnable() {
