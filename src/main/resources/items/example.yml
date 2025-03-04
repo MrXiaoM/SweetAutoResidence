@@ -1,0 +1,29 @@
+
+# 创建的领地名
+res-name:
+  # 格式（可使用 PAPI 变量）
+  format: '%player_name%'
+  # 如果已有重命领地，则使用别名（增加下划线和数字）
+  use-alias-if-exists: false
+
+# 领地最大大小
+size:
+  x: 10
+  y: 10
+  z: 10
+
+# 创建条件
+conditions:
+  无领地:
+    input: '%sares_residence_count%'
+    type: '=='
+    output: 0
+  deny-commands:
+    - '[message]&e你已经创建过领地了'
+
+item:
+  material: 'PAPER'
+  display: '&e&l新人许可'
+  lore:
+    - '&f给予新人的免费圈地许可'
+    - '&f手持本物品，右键点击创建领地'
