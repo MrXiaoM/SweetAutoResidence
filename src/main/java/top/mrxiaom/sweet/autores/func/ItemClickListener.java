@@ -74,6 +74,7 @@ public class ItemClickListener extends AbstractModule implements Listener {
                 t(player, "&e请先手持道具，右键点击查看圈地范围");
                 return true;
             }
+            if (item.checkDeny(player)) return true;
             if (plugin.getAdapter().hasReachResCountLimit(player)) {
                 t(player, "&e你的领地数量已到达上限");
                 return true;

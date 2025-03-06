@@ -13,6 +13,7 @@ import top.mrxiaom.pluginbase.utils.ItemStackUtil;
 import top.mrxiaom.pluginbase.utils.PAPI;
 import top.mrxiaom.sweet.autores.api.IResidenceAdapter;
 import top.mrxiaom.sweet.autores.conditions.ICondition;
+import top.mrxiaom.sweet.autores.conditions.NumberCondition;
 import top.mrxiaom.sweet.autores.func.ItemsManager;
 
 import java.util.ArrayList;
@@ -65,6 +66,24 @@ public class Item {
         return adapter.isResidenceExists(res) ? null : res;
     }
 
+    public boolean checkDeny(Player player) {
+        boolean match = true;
+        for (ICondition condition : conditionsList) {
+            if (condition.match(player)) continue;
+            match = false;
+            for (IAction action : condition.getDenyCommands()) {
+                action.run(player);
+            }
+        }
+        if (!match) {
+            for (IAction action : conditionsDenyCommands) {
+                action.run(player);
+            }
+            return true;
+        }
+        return false;
+    }
+
     @Nullable
     public ItemStack generateItem() {
         return generateItem(1);
@@ -110,6 +129,17 @@ public class Item {
             if (key.equals("deny-commands")) {
                 conditionsDenyCommands.addAll(loadActions(section.getStringList(key)));
                 continue;
+            }
+            String typeStr = section.getString(key + ".type");
+            if (typeStr == null) continue;
+            boolean reversed = typeStr.startsWith("!");
+            String type = reversed ? (typeStr.substring(1)) : typeStr;
+            NumberCondition.Operator numberOperator = NumberCondition.Operator.parse(type);
+            if (numberOperator != null) {
+                String input = section.getString(key + ".input", "");
+                String output = section.getString(key + ".output", "");
+                List<IAction> denyCommands = loadActions(section, key + ".deny-commands");
+                conditionsList.add(new NumberCondition(reversed, input, numberOperator, output, denyCommands));
             }
             // TODO: 加载领地创建条件
         }
