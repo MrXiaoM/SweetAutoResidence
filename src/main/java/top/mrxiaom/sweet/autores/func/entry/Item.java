@@ -4,11 +4,14 @@ import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.pluginbase.func.gui.actions.IAction;
 import top.mrxiaom.pluginbase.utils.AdventureItemStack;
 import top.mrxiaom.pluginbase.utils.ItemStackUtil;
+import top.mrxiaom.pluginbase.utils.PAPI;
+import top.mrxiaom.sweet.autores.api.IResidenceAdapter;
 import top.mrxiaom.sweet.autores.conditions.ICondition;
 import top.mrxiaom.sweet.autores.func.ItemsManager;
 
@@ -40,6 +43,26 @@ public class Item {
         this.itemMaterial = itemMaterial;
         this.itemDisplay = itemDisplay;
         this.itemLore = itemLore;
+    }
+
+    @Nullable
+    public String genResName(IResidenceAdapter adapter, Player owner) {
+        if (nameUseAliasIfExists) {
+            for (int i = 0; i < 50; i++) {
+                String res;
+                if (i > 0) {
+                    res = PAPI.setPlaceholders(owner, nameFormat) + "_" + i;
+                } else {
+                    res = PAPI.setPlaceholders(owner, nameFormat);
+                }
+                if (!adapter.isResidenceExists(res)) {
+                    return res;
+                }
+            }
+            return null;
+        }
+        String res = PAPI.setPlaceholders(owner, nameFormat);
+        return adapter.isResidenceExists(res) ? null : res;
     }
 
     @Nullable
