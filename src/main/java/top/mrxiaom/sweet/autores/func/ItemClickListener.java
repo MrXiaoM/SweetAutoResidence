@@ -1,6 +1,7 @@
 package top.mrxiaom.sweet.autores.func;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -61,13 +62,13 @@ public class ItemClickListener extends AbstractModule implements Listener {
         if (lock.contains(uuid)) return;
         lock.add(uuid);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            if (handleClick(player, uuid, item, hand)) {
+            if (handleClick(player, uuid, item, hand, itemStack)) {
                 lock.remove(uuid);
             }
         });
     }
 
-    private boolean handleClick(Player player, UUID uuid, Item item, EquipmentSlot hand) {
+    private boolean handleClick(Player player, UUID uuid, Item item, EquipmentSlot hand, ItemStack itemStack) {
         if (player.isSneaking()) { // 确认圈地
             SelectionCache cache = caches.remove(uuid);
             if (cache == null || !cache.isValid(player, item)) {
@@ -85,7 +86,13 @@ public class ItemClickListener extends AbstractModule implements Listener {
                 return true;
             }
             Bukkit.getScheduler().runTask(plugin, () -> {
-                player.getInventory().setItem(hand, null);
+                int amount = itemStack.getAmount();
+                if (amount <= 1) {
+                    itemStack.setAmount(0);
+                    itemStack.setType(Material.AIR);
+                } else {
+                    itemStack.setAmount(amount - 1);
+                }
                 try {
                     plugin.getAdapter().createResidence(player, resName, cache.selection);
                 } catch (Throwable t) {
