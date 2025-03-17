@@ -53,6 +53,6 @@ public interface IResidenceAdapter {
         if (max < 0) return false;
         if (max == 0) return true;
         int count = getResidenceCount(player);
-        return count <= max;
+        return count >= max;
     }
 }
