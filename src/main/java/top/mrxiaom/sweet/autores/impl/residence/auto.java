@@ -26,6 +26,10 @@ public class auto {
         Residence.getInstance().getPlayerManager().getResidencePlayer(player).forceUpdateGroup();
         Location loc = player.getLocation();
 
+        if (plugin.getResidenceManager().getByLoc(loc) != null) {
+            return null;
+        }
+
         int minY = loc.getBlockY();
         int maxY = loc.getBlockY();
 
