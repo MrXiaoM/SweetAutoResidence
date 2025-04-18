@@ -7,6 +7,7 @@ import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.pluginbase.BukkitPlugin;
 import top.mrxiaom.pluginbase.EconomyHolder;
+import top.mrxiaom.pluginbase.utils.PAPI;
 import top.mrxiaom.pluginbase.utils.scheduler.FoliaLibScheduler;
 import top.mrxiaom.sweet.autores.api.IResidenceAdapter;
 
@@ -102,6 +103,9 @@ public class SweetAutoResidence extends BukkitPlugin {
 
     @Override
     protected void afterEnable() {
+        if (PAPI.isEnabled()) {
+            new Placeholders(this).register();
+        }
         getLogger().info("SweetAutoResidence 加载完毕");
     }
 }
