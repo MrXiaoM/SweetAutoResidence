@@ -37,6 +37,7 @@ dependencies {
     implementation("de.tr7zw:item-nbt-api:2.14.2-SNAPSHOT")
     implementation("org.jetbrains:annotations:24.0.0")
     implementation("top.mrxiaom:PluginBase:1.3.8")
+    implementation(project(":res-ext"))
 }
 java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
@@ -58,6 +59,7 @@ tasks {
         ).forEach { (original, target) ->
             relocate(original, "$shadowGroup.$target")
         }
+        relocate("res.ext", "top.mrxiaom.sweet.autores.impl.residence")
     }
     build {
         dependsOn(shadowJar)
