@@ -7,6 +7,7 @@ import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.pluginbase.BukkitPlugin;
 import top.mrxiaom.pluginbase.EconomyHolder;
+import top.mrxiaom.pluginbase.utils.scheduler.FoliaLibScheduler;
 import top.mrxiaom.sweet.autores.api.IResidenceAdapter;
 
 import java.io.InputStream;
@@ -29,6 +30,7 @@ public class SweetAutoResidence extends BukkitPlugin {
                 .scanIgnore("top.mrxiaom.sweet.autores.libs")
                 .libraries(true)
         );
+        scheduler = new FoliaLibScheduler(this);
     }
     private IResidenceAdapter adapter;
     @NotNull

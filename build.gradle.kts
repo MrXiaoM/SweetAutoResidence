@@ -33,9 +33,10 @@ dependencies {
     implementation("net.kyori:adventure-api:4.17.0")
     implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     implementation("net.kyori:adventure-text-minimessage:4.17.0")
-    implementation("de.tr7zw:item-nbt-api:2.14.1")
+    implementation("com.github.technicallycoded:FoliaLib:0.4.4")
+    implementation("de.tr7zw:item-nbt-api:2.14.2-SNAPSHOT")
     implementation("org.jetbrains:annotations:24.0.0")
-    implementation("top.mrxiaom:PluginBase:1.3.2")
+    implementation("top.mrxiaom:PluginBase:1.3.8")
 }
 java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
@@ -46,12 +47,14 @@ java {
 tasks {
     shadowJar {
         archiveClassifier.set("")
+        destinationDirectory.set(rootProject.file("out"))
         mapOf(
             "org.intellij.lang.annotations" to "annotations.intellij",
             "org.jetbrains.annotations" to "annotations.jetbrains",
             "top.mrxiaom.pluginbase" to "base",
             "de.tr7zw.changeme.nbtapi" to "nbtapi",
             "net.kyori" to "kyori",
+            "com.tcoded.folialib" to "folialib",
         ).forEach { (original, target) ->
             relocate(original, "$shadowGroup.$target")
         }
