@@ -3,7 +3,6 @@ package top.mrxiaom.sweet.autores.api;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 
 /**
  * 领地选择区域
