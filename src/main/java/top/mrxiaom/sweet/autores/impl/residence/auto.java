@@ -7,13 +7,16 @@ import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.CuboidArea;
 import com.bekvon.bukkit.residence.selection.SelectionManager;
+import com.bekvon.bukkit.residence.text.Language;
 import net.Zrips.CMILib.Container.CMIWorld;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import top.mrxiaom.sweet.autores.api.Selection;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +25,43 @@ import java.util.List;
  * <a href="https://github.com/Zrips/Residence/blob/master/src/com/bekvon/bukkit/residence/commands/auto.java">来自 Github</a>
  */
 public class auto {
+    private static Language language;
+    private static Language getLM() {
+        if (language == null) try {
+            language = Residence.getInstance().getLM();
+        } catch (LinkageError e) {
+            try {
+                Method method = Residence.class.getDeclaredMethod("getLM");
+                language = (Language) method.invoke(null);
+            } catch (ReflectiveOperationException ignored) {
+            }
+        }
+        return language;
+    }
+
+    public static void msg(CommandSender sender, lm lm, Object... variables) {
+        if (sender != null) {
+            String msg;
+            Language manager = getLM();
+            if (manager == null) {
+                sender.sendMessage("ERROR");
+                return;
+            }
+            if (manager.containsKey(lm.getPath())) {
+                msg = manager.getMessage(lm, variables);
+                if (!msg.isEmpty()) {
+                    sender.sendMessage(msg);
+                }
+            } else {
+                msg = lm.getPath();
+                if (!msg.isEmpty()) {
+                    sender.sendMessage(lm.getPath());
+                }
+            }
+
+        }
+    }
+
     public static Selection genSelection(Residence plugin, Player player, int configMaxX, int configMaxY, int configMaxZ) {
         Residence.getInstance().getPlayerManager().getResidencePlayer(player).forceUpdateGroup();
         Location loc = player.getLocation();
@@ -50,7 +90,7 @@ public class auto {
         //plugin.getSelectionManager().afterSelectionUpdate(player, true);
 
         if (!result) {
-            Residence.getInstance().msg(player, lm.Area_SizeLimit);
+            msg(player, lm.Area_SizeLimit);
             return null;
         }
 
@@ -59,7 +99,7 @@ public class auto {
                 .collidesWithResidence(plugin.getSelectionManager().getSelectionCuboid(player));
 
         if (collision != null) {
-            Residence.getInstance().msg(player, lm.Area_Collision, collision.getResidenceName());
+            msg(player, lm.Area_Collision, collision.getResidenceName());
             return null;
         }
 
