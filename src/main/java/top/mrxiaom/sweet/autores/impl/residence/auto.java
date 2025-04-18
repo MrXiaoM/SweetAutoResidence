@@ -68,7 +68,7 @@ public class auto {
 
         ClaimedResidence alreadyExists = plugin.getResidenceManager().getByLoc(loc);
         if (alreadyExists != null) {
-            msg(player, lm.Area_Collision, alreadyExists.getName());
+            msg(player, lm.Area_Collision, alreadyExists.getResidenceName());
             return null;
         }
 
@@ -244,9 +244,8 @@ public class auto {
 
         int skipped = 0;
         int done = 0;
-
-        int maxWorldY = 320;//group.getMaxYSize();
-        int minWorldY = 3;//group.getMinYSize();
+        int maxWorldY = 384;
+        int minWorldY = 3;
         int lowestY = -64;
         int highestY = 320;
 
