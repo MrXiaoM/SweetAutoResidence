@@ -9,6 +9,7 @@ public class SelectionCache {
     public World world;
     public String itemId;
     public Selection selection;
+    public long startTime = System.currentTimeMillis();
 
     public SelectionCache(Player player, World world, String itemId, Selection selection) {
         this.player = player;
@@ -21,6 +22,7 @@ public class SelectionCache {
     public boolean isValid(Player player, Item item) {
         if (!itemId.equals(item.id)) return false;
         if (!world.getName().equals(player.getWorld().getName())) return false;
+        if (System.currentTimeMillis() - startTime > 30000L) return false; // 30 秒内创建领地
         return true;
     }
 }
