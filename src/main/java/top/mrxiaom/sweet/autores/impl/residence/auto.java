@@ -66,7 +66,9 @@ public class auto {
         Residence.getInstance().getPlayerManager().getResidencePlayer(player).forceUpdateGroup();
         Location loc = player.getLocation();
 
-        if (plugin.getResidenceManager().getByLoc(loc) != null) {
+        ClaimedResidence alreadyExists = plugin.getResidenceManager().getByLoc(loc);
+        if (alreadyExists != null) {
+            msg(player, lm.Area_Collision, alreadyExists.getName());
             return null;
         }
 
