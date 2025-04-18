@@ -107,6 +107,7 @@ public class ItemClickListener extends AbstractModule implements Listener {
             if (selection == null) return true;
             caches.put(uuid, new SelectionCache(player, player.getWorld(), item.id, selection));
             t(player, "&a已选中区域，Shift+右键确认圈地");
+            plugin.getAdapter().showSelection(player, selection);
             return true;
         }
     }

@@ -55,4 +55,8 @@ public interface IResidenceAdapter {
         int count = getResidenceCount(player);
         return count >= max;
     }
+
+    default void showSelection(Player player, Selection area) {
+
+    }
 }

@@ -1,5 +1,10 @@
 package top.mrxiaom.sweet.autores.api;
 
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+
 /**
  * 领地选择区域
  */
@@ -39,5 +44,21 @@ public class Selection {
         this.y2 = y2;
         this.z2 = z2;
         return this;
+    }
+
+    public Location getPos1(World world) {
+        return new Location(world, x1, y1, z1);
+    }
+
+    public Location getPos2(World world) {
+        return new Location(world, x2, y2, z2);
+    }
+
+    public Location getPos1(Entity entity) {
+        return getPos1(entity.getWorld());
+    }
+
+    public Location getPos2(Entity entity) {
+        return getPos2(entity.getWorld());
     }
 }

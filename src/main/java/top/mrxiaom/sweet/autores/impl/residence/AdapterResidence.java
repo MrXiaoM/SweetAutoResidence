@@ -2,6 +2,9 @@ package top.mrxiaom.sweet.autores.impl.residence;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.ResidencePlayer;
+import com.bekvon.bukkit.residence.containers.Visualizer;
+import com.bekvon.bukkit.residence.protection.CuboidArea;
+import com.bekvon.bukkit.residence.selection.SelectionManager;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -51,5 +54,18 @@ public class AdapterResidence extends AbstractPluginHolder implements IResidence
     public int getResidenceMaxCount(Player player) {
         ResidencePlayer p = residence.getPlayerManager().getResidencePlayer(player);
         return p.getMaxRes();
+    }
+
+    @Override
+    public void showSelection(Player player, Selection area) {
+        SelectionManager manager = Residence.getInstance().getSelectionManager();
+        Visualizer v = new Visualizer(player);
+
+        v.setStart(System.currentTimeMillis());
+        v.cancelAll();
+
+        v.setAreas(new CuboidArea(area.getPos1(player), area.getPos2(player)));
+        v.setOnce(false);
+        manager.showBounds(player, v);
     }
 }
