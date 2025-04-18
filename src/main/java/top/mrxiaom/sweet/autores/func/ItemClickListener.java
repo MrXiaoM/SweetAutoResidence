@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.pluginbase.func.AutoRegister;
+import top.mrxiaom.sweet.autores.Messages;
 import top.mrxiaom.sweet.autores.SweetAutoResidence;
 import top.mrxiaom.sweet.autores.api.Selection;
 import top.mrxiaom.sweet.autores.func.entry.Item;
@@ -72,17 +73,17 @@ public class ItemClickListener extends AbstractModule implements Listener {
         if (player.isSneaking()) { // 确认圈地
             SelectionCache cache = caches.remove(uuid);
             if (cache == null || !cache.isValid(player, item)) {
-                t(player, "&e请先手持道具，右键点击查看圈地范围");
+                Messages.create__no_selection.tm(player);
                 return true;
             }
             if (item.checkDeny(player)) return true;
             if (plugin.getAdapter().hasReachResCountLimit(player)) {
-                t(player, "&e你的领地数量已到达上限");
+                Messages.create__no_available.tm(player);
                 return true;
             }
             String resName = item.genResName(plugin.getAdapter(), player);
             if (resName == null) {
-                t(player, "&e同名的领地已存在，无法创建");
+                Messages.create__already_exists.tm(player);
                 return true;
             }
             Bukkit.getScheduler().runTask(plugin, () -> {
@@ -106,7 +107,7 @@ public class ItemClickListener extends AbstractModule implements Listener {
             Selection selection = plugin.getAdapter().genAutoSelection(player, item.sizeX, item.sizeY, item.sizeZ);
             if (selection == null) return true;
             caches.put(uuid, new SelectionCache(player, player.getWorld(), item.id, selection));
-            t(player, "&a已选中区域，Shift+右键确认圈地");
+            Messages.selection__success.tm(player);
             plugin.getAdapter().showSelection(player, selection);
             return true;
         }

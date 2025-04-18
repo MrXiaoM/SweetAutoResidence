@@ -11,7 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.pluginbase.func.AutoRegister;
 import top.mrxiaom.pluginbase.utils.ItemStackUtil;
+import top.mrxiaom.pluginbase.utils.Pair;
 import top.mrxiaom.pluginbase.utils.Util;
+import top.mrxiaom.sweet.autores.Messages;
 import top.mrxiaom.sweet.autores.SweetAutoResidence;
 import top.mrxiaom.sweet.autores.func.AbstractModule;
 import top.mrxiaom.sweet.autores.func.ItemsManager;
@@ -31,31 +33,34 @@ public class CommandMain extends AbstractModule implements CommandExecutor, TabC
         if (args.length >= 2 && "give".equalsIgnoreCase(args[0]) && sender.isOp()) {
             Item item = ItemsManager.inst().get(args[1]);
             if (item == null) {
-                return t(sender, "&e找不到物品 " + args[1]);
+                return Messages.command__give_item_not_found.tm(sender, Pair.of("%item%", args[1]));
             }
             Integer i = args.length >= 3 ? Util.parseInt(args[2]).orElse(null) : Integer.valueOf(1);
             if (i == null) {
-                return t(sender, "&e请输入一个整数");
+                return Messages.not_integer.tm(sender);
             }
             Player player;
             if (args.length >= 4) {
                 player = Util.getOnlinePlayer(args[3]).orElse(null);
                 if (player == null) {
-                    return t(sender, "&e玩家不在线");
+                    return Messages.player_not_online.tm(sender);
                 }
             } else {
                 if (sender instanceof Player) {
                     player = (Player) sender;
                 } else {
-                    return t(sender, "&e该命令只能由玩家执行");
+                    return Messages.player_only.tm(sender);
                 }
             }
             ItemStackUtil.giveItemToPlayer(player, item.generateItem(i));
-            return t(sender, "&a已给予玩家&e " + player.getName() + "&a 物品 " + item.itemDisplay + "&r &a共 &e" + i + "&a 个");
+            return Messages.command__give_success.tm(sender,
+                    Pair.of("%player%", player.getName()),
+                    Pair.of("%item%", item.itemDisplay),
+                    Pair.of("%count%", i));
         }
         if (args.length == 1 && "reload".equalsIgnoreCase(args[0]) && sender.isOp()) {
             plugin.reloadConfig();
-            return t(sender, "&a配置文件已重载");
+            return Messages.command__reload.tm(sender);
         }
         return true;
     }

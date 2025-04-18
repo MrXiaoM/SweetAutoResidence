@@ -6,7 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.pluginbase.BukkitPlugin;
-import top.mrxiaom.pluginbase.EconomyHolder;
+import top.mrxiaom.pluginbase.func.LanguageManager;
 import top.mrxiaom.pluginbase.utils.PAPI;
 import top.mrxiaom.pluginbase.utils.scheduler.FoliaLibScheduler;
 import top.mrxiaom.sweet.autores.api.IResidenceAdapter;
@@ -34,10 +34,6 @@ public class SweetAutoResidence extends BukkitPlugin {
         scheduler = new FoliaLibScheduler(this);
     }
     private IResidenceAdapter adapter;
-    @NotNull
-    public EconomyHolder getEconomy() {
-        return options.economy();
-    }
 
     @NotNull
     public IResidenceAdapter getAdapter() {
@@ -99,6 +95,13 @@ public class SweetAutoResidence extends BukkitPlugin {
             warn("无法加载领地插件适配器 " + adapterClass + "，卸载插件", e);
             return false;
         }
+    }
+
+    @Override
+    protected void beforeEnable() {
+        LanguageManager.inst()
+                .setLangFile("messages.yml")
+                .register(Messages.class, Messages::holder);
     }
 
     @Override
