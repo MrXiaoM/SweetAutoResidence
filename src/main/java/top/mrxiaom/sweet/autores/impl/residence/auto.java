@@ -537,11 +537,6 @@ public class auto {
                 continue;
             }
 
-            if (checkBalance && plugin.getConfigManager().enableEconomy() && !Residence.getInstance().getEconomyManager().canAfford(player, c.getCost(group))) {
-                plugin.msg(player, lm.Economy_NotEnoughMoney);
-                return false;
-            }
-
             cuboid.setLowLocation(c.getLowLocation());
             cuboid.setHighLocation(c.getHighLocation());
 
