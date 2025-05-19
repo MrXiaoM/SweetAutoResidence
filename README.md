@@ -15,3 +15,15 @@ Minecraft 领地自动圈地道具插件
 + [Dominion](https://www.minebbs.com/resources/7933/)
 
 更多插件可通过编写附属去兼容，详见 [SweetAutoResidence#checkAdapter](src/main/java/top/mrxiaom/sweet/autores/SweetAutoResidence.java)。
+
+## 开发者
+
+[![jitpack](https://jitpack.io/v/MrXiaoM/SweetAutoResidence.svg)](https://jitpack.io/#MrXiaoM/SweetAutoResidence)
+```kotlin
+repositories {
+    maven("https://jitpack.io")
+}
+dependencies {
+    compileOnly("com.github.MrXiaoM:SweetAutoResidence:$VERSION")
+}
+```
