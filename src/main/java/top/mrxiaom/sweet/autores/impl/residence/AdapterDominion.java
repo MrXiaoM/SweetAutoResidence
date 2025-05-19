@@ -3,8 +3,13 @@ package top.mrxiaom.sweet.autores.impl.residence;
 import cn.lunadeer.dominion.Dominion;
 import cn.lunadeer.dominion.DominionInterface;
 import cn.lunadeer.dominion.api.DominionAPI;
+import cn.lunadeer.dominion.api.dtos.CuboidDTO;
 import cn.lunadeer.dominion.configuration.Configuration;
 import cn.lunadeer.dominion.configuration.Limitation;
+import cn.lunadeer.dominion.events.dominion.DominionCreateEvent;
+import cn.lunadeer.dominion.utils.ParticleUtil;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,6 +17,8 @@ import top.mrxiaom.sweet.autores.SweetAutoResidence;
 import top.mrxiaom.sweet.autores.api.IResidenceAdapter;
 import top.mrxiaom.sweet.autores.api.Selection;
 import top.mrxiaom.sweet.autores.func.AbstractPluginHolder;
+
+import static cn.lunadeer.dominion.misc.Others.autoPoints;
 
 @SuppressWarnings({"unused", "UnstableApiUsage"})
 public class AdapterDominion extends AbstractPluginHolder implements IResidenceAdapter {
@@ -30,8 +37,10 @@ public class AdapterDominion extends AbstractPluginHolder implements IResidenceA
 
     @Override
     public @Nullable Selection genAutoSelection(Player player, int xSize, int ySize, int zSize) {
-        // TODO: 生成自动选区
-        return null;
+        World world = player.getWorld();
+        Location[] points = autoPoints(player);
+        CuboidDTO cuboidDTO = new CuboidDTO(points[0], points[1]);
+        return new Selection(cuboidDTO, cuboidDTO.x1(), cuboidDTO.y1(), cuboidDTO.z1(), cuboidDTO.x2(), cuboidDTO.y2(), cuboidDTO.z2());
     }
 
     @Override
@@ -46,7 +55,16 @@ public class AdapterDominion extends AbstractPluginHolder implements IResidenceA
 
     @Override
     public void createResidence(Player player, String resName, Selection area) {
-        // TODO: 创建领地
+        CuboidDTO cuboidDTO = (CuboidDTO) area.tag;
+        DominionCreateEvent event = new DominionCreateEvent(
+                player,
+                resName,
+                player.getUniqueId(),
+                player.getWorld(), cuboidDTO,
+                null
+        );
+        event.setSkipEconomy(true);
+        event.call();
     }
 
     @Override
@@ -59,5 +77,11 @@ public class AdapterDominion extends AbstractPluginHolder implements IResidenceA
         Limitation limitation = Configuration.getPlayerLimitation(player);
         Limitation.WorldLimitationSetting settings = limitation.getWorldSettings(player.getWorld());
         return settings.amount;
+    }
+
+    @Override
+    public void showSelection(Player player, Selection area) {
+        CuboidDTO cuboidDTO = (CuboidDTO) area.tag;
+        ParticleUtil.showBorder(player, player.getWorld(), cuboidDTO);
     }
 }
