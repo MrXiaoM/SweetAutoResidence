@@ -12,10 +12,13 @@ import top.mrxiaom.pluginbase.utils.PAPI;
 import top.mrxiaom.pluginbase.utils.scheduler.FoliaLibScheduler;
 import top.mrxiaom.sweet.autores.api.IResidenceAdapter;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class SweetAutoResidence extends BukkitPlugin {
     public static SweetAutoResidence getInstance() {
@@ -35,6 +38,11 @@ public class SweetAutoResidence extends BukkitPlugin {
         scheduler = new FoliaLibScheduler(this);
     }
     private IResidenceAdapter adapter;
+    private final Map<String, String> builtInAdapters = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER) {{
+        put("Dominion", "top.mrxiaom.sweet.autores.impl.dominion.AdapterDominion");
+        put("Residence", "top.mrxiaom.sweet.autores.impl.residence.AdapterResidence");
+        // TODO: 在这里添加更多领地插件支持
+    }};
 
     @NotNull
     public IResidenceAdapter getAdapter() {
@@ -61,6 +69,12 @@ public class SweetAutoResidence extends BukkitPlugin {
     }
 
     protected boolean checkAdapter() {
+        File file = resolve("./adapters.yml");
+        if (!file.exists()) {
+            saveResource("adapters.yml", file);
+        }
+        YamlConfiguration adapters = YamlConfiguration.loadConfiguration(file);
+
         String adapterClass = null;
         InputStream configIn = getResource("residence-adapter.yml");
         if (configIn != null) { // 外置的 领地插件适配器
@@ -78,19 +92,18 @@ public class SweetAutoResidence extends BukkitPlugin {
             getLogger().info("未找到外置适配器，正在搜索使用内置适配器");
         }
         PluginManager pm = Bukkit.getPluginManager();
-        if (adapterClass == null && pm.isPluginEnabled("Dominion")) {
-            adapterClass = "top.mrxiaom.sweet.autores.impl.dominion.AdapterDominion";
+        for (String pluginName : adapters.getStringList("built-in-priority")) {
+            String type = builtInAdapters.get(pluginName);
+            if (type != null && pm.isPluginEnabled(pluginName)) {
+                adapterClass = type;
+                break;
+            }
         }
-        if (adapterClass == null && pm.isPluginEnabled("Residence")) {
-            adapterClass = "top.mrxiaom.sweet.autores.impl.residence.AdapterResidence";
-        }
-        // TODO: 在这里添加更多领地插件支持
-        getLogger().info("内置的适配器: " + adapterClass);
-
         if (adapterClass == null) {
             warn("未找到可用的领地插件适配器，卸载插件");
             return false;
         }
+        getLogger().info("内置的适配器: " + adapterClass);
         try {
             Class<?> type = Class.forName(adapterClass);
             Constructor<?> constructor = type.getConstructor(SweetAutoResidence.class);
