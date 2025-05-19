@@ -21,13 +21,13 @@ fun download(pair: Pair<String, File>) {
         }
     }
 }
-
-val residence = settingsDir.absoluteFile.resolve("libs/Residence.jar")
+val libs = settingsDir.absoluteFile.resolve("libs").also { it.mkdirs() }
+val residence = libs.resolve("Residence.jar")
 if (!residence.exists()) {
     println("Downloading Residence-5.1.5.2...")
     download("https://zrips.net/Residence/download.php?file=Residence5.1.5.2.jar" to residence)
 }
-val dominion = settingsDir.absoluteFile.resolve("libs/Dominion.jar")
+val dominion = libs.resolve("Dominion.jar")
 if (!dominion.exists()) {
     println("Downloading Dominion-v4.2.0-beta...")
     download(modrinth("lunadeer-dominion", "v4.2.0-beta", "Dominion-4.2.0-beta-lite.jar") to dominion)
