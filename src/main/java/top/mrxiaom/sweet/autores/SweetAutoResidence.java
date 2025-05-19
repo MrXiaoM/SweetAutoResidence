@@ -79,7 +79,7 @@ public class SweetAutoResidence extends BukkitPlugin {
         }
         PluginManager pm = Bukkit.getPluginManager();
         if (adapterClass == null && pm.isPluginEnabled("Dominion")) {
-            adapterClass = "top.mrxiaom.sweet.autores.impl.residence.AdapterDominion";
+            adapterClass = "top.mrxiaom.sweet.autores.impl.dominion.AdapterDominion";
         }
         if (adapterClass == null && pm.isPluginEnabled("Residence")) {
             adapterClass = "top.mrxiaom.sweet.autores.impl.residence.AdapterResidence";

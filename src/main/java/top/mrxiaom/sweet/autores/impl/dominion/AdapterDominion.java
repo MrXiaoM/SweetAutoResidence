@@ -1,4 +1,4 @@
-package top.mrxiaom.sweet.autores.impl.residence;
+package top.mrxiaom.sweet.autores.impl.dominion;
 
 import cn.lunadeer.dominion.Dominion;
 import cn.lunadeer.dominion.DominionInterface;
