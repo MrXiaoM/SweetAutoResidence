@@ -1,6 +1,7 @@
 package top.mrxiaom.sweet.autores.impl.residence;
 
 import cn.lunadeer.dominion.Dominion;
+import cn.lunadeer.dominion.DominionInterface;
 import cn.lunadeer.dominion.api.DominionAPI;
 import cn.lunadeer.dominion.configuration.Configuration;
 import cn.lunadeer.dominion.configuration.Limitation;
@@ -18,12 +19,8 @@ public class AdapterDominion extends AbstractPluginHolder implements IResidenceA
     Dominion dominion;
     public AdapterDominion(SweetAutoResidence plugin) {
         super(plugin);
-        try {
-            dominion = Dominion.instance;
-            dominionAPI = DominionAPI.getInstance();
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
+        dominion = Dominion.instance;
+        dominionAPI = DominionInterface.instance;
     }
 
     @Override
