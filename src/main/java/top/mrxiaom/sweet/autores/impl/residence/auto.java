@@ -14,10 +14,8 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import res.ext.ResidenceExt;
 import top.mrxiaom.sweet.autores.api.Selection;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,14 +25,9 @@ import java.util.List;
  */
 public class auto {
     private static Language language;
-    private static Language getLM() {
-        if (language == null) try {
-            language = Residence.getLM();
-        } catch (LinkageError ignored) {
-        }
-        if (language == null) try {
-            language = ResidenceExt.getLM();
-        } catch (LinkageError ignored) {
+    public static Language getLM() {
+        if (language == null) {
+            language = Residence.getInstance().getLM();
         }
         return language;
     }

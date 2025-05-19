@@ -20,6 +20,7 @@ public class AdapterResidence extends AbstractPluginHolder implements IResidence
     Residence residence = Residence.getInstance();
     public AdapterResidence(SweetAutoResidence plugin) {
         super(plugin);
+        auto.getLM();
     }
 
     @Override

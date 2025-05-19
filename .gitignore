@@ -58,7 +58,5 @@ gradle-app.setting
 **/build/
 run/
 !gradle-wrapper.jar
-!libs/*.jar
-!Residence-*.jar
 
 neoworld/

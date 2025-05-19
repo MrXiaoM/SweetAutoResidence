@@ -25,7 +25,7 @@ dependencies {
     compileOnly("net.milkbowl.vault:VaultAPI:1.7")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.github.Zrips:CMILib:1.4.7.4")
-    compileOnly(fileTree("libs"))
+    compileOnly(files("libs/Residence.jar"))
 
     implementation("net.kyori:adventure-api:4.21.0")
     implementation("net.kyori:adventure-platform-bukkit:4.4.0")
@@ -34,7 +34,6 @@ dependencies {
     implementation("de.tr7zw:item-nbt-api:2.15.0")
     implementation("org.jetbrains:annotations:24.0.0")
     implementation("top.mrxiaom:PluginBase:1.4.3")
-    implementation(project(":res-ext"))
 }
 java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
@@ -56,7 +55,9 @@ tasks {
         ).forEach { (original, target) ->
             relocate(original, "$shadowGroup.$target")
         }
-        relocate("res.ext", "top.mrxiaom.sweet.autores.impl.residence")
+    }
+    jar {
+        archiveClassifier.set("api")
     }
     build {
         dependsOn(shadowJar)
