@@ -92,13 +92,13 @@ public class SweetAutoResidence extends BukkitPlugin {
         }
         if (adapterClass == null) {
             getLogger().info("未找到外置适配器，正在搜索使用内置适配器");
-        }
-        PluginManager pm = Bukkit.getPluginManager();
-        for (String pluginName : adapters.getStringList("built-in-priority")) {
-            String type = builtInAdapters.get(pluginName);
-            if (type != null && pm.isPluginEnabled(pluginName)) {
-                adapterClass = type;
-                break;
+            PluginManager pm = Bukkit.getPluginManager();
+            for (String pluginName : adapters.getStringList("built-in-priority")) {
+                String type = builtInAdapters.get(pluginName);
+                if (type != null && pm.isPluginEnabled(pluginName)) {
+                    adapterClass = type;
+                    break;
+                }
             }
         }
         if (adapterClass == null) {
