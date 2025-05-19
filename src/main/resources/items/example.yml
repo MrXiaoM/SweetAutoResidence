@@ -27,3 +27,12 @@ item:
   lore:
     - '&f给予新人的免费圈地许可'
     - '&f手持本物品，右键点击创建领地'
+
+# 使用物品，且创建领地没有出现报错时执行命令
+# [console] 控制台命令
+# [player] 玩家命令
+# [message] 聊天消息
+# [actionbar] ActionBar消息
+# 均支持使用 PAPI 变量，此外，%name% 为领地名
+use-commands:
+  - '[message]&a已成功创建领地&e %name%'

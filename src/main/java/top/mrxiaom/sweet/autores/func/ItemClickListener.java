@@ -96,8 +96,10 @@ public class ItemClickListener extends AbstractModule implements Listener {
                 }
                 try {
                     plugin.getAdapter().createResidence(player, resName, cache.selection);
+                    item.executeUseCommands(player, resName);
                 } catch (Throwable t) {
                     warn(t);
+                    Messages.create__failed.tm(player);
                 }
                 lock.remove(uuid);
             });

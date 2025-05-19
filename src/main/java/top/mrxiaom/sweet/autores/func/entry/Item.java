@@ -7,10 +7,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
+import top.mrxiaom.pluginbase.actions.ActionProviders;
 import top.mrxiaom.pluginbase.api.IAction;
 import top.mrxiaom.pluginbase.utils.AdventureItemStack;
 import top.mrxiaom.pluginbase.utils.ItemStackUtil;
 import top.mrxiaom.pluginbase.utils.PAPI;
+import top.mrxiaom.pluginbase.utils.Pair;
+import top.mrxiaom.sweet.autores.SweetAutoResidence;
 import top.mrxiaom.sweet.autores.api.IResidenceAdapter;
 import top.mrxiaom.sweet.autores.conditions.ICondition;
 import top.mrxiaom.sweet.autores.conditions.NumberCondition;
@@ -31,19 +34,44 @@ public class Item {
     public final String itemMaterial;
     public final String itemDisplay;
     public final List<String> itemLore;
+    public final List<IAction> useCommands;
 
-    public Item(String id, String nameFormat, boolean nameUseAliasIfExists, int sizeX, int sizeY, int sizeZ, List<ICondition> conditionsList, List<IAction> conditionsDenyCommands, String itemMaterial, String itemDisplay, List<String> itemLore) {
+    public Item(String id, YamlConfiguration config, int sizeX, int sizeY, int sizeZ) {
         this.id = id;
-        this.nameFormat = nameFormat;
-        this.nameUseAliasIfExists = nameUseAliasIfExists;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.sizeZ = sizeZ;
-        this.conditionsList = conditionsList;
-        this.conditionsDenyCommands = conditionsDenyCommands;
-        this.itemMaterial = itemMaterial;
-        this.itemDisplay = itemDisplay;
-        this.itemLore = itemLore;
+
+        ConfigurationSection section;
+        this.nameFormat = config.getString("res-name.format");
+        this.nameUseAliasIfExists = config.getBoolean("res-name.use-alias-if-exists");
+
+        this.conditionsList = new ArrayList<>();
+        this.conditionsDenyCommands = new ArrayList<>();
+        section = config.getConfigurationSection("conditions");
+        if (section != null) for (String key : section.getKeys(false)) {
+            if (key.equals("deny-commands")) {
+                conditionsDenyCommands.addAll(loadActions(section.getStringList(key)));
+                continue;
+            }
+            String typeStr = section.getString(key + ".type");
+            if (typeStr == null) continue;
+            boolean reversed = typeStr.startsWith("!");
+            String type = reversed ? (typeStr.substring(1)) : typeStr;
+            NumberCondition.Operator numberOperator = NumberCondition.Operator.parse(type);
+            if (numberOperator != null) {
+                String input = section.getString(key + ".input", "");
+                String output = section.getString(key + ".output", "");
+                List<IAction> denyCommands = loadActions(section, key + ".deny-commands");
+                conditionsList.add(new NumberCondition(reversed, input, numberOperator, output, denyCommands));
+            }
+        }
+
+        this.itemMaterial = config.getString("item.material");
+        this.itemDisplay = config.getString("item.display");
+        this.itemLore = config.getStringList("item.lore");
+
+        this.useCommands = ActionProviders.loadActions(config, "use-commands");
     }
 
     @Nullable
@@ -108,13 +136,14 @@ public class Item {
         return item;
     }
 
+    public void executeUseCommands(Player player, String resName) {
+        List<Pair<String, Object>> pairs = new ArrayList<>();
+        pairs.add(Pair.of("%name%", resName));
+        ActionProviders.run(SweetAutoResidence.getInstance(), player, useCommands, pairs);
+    }
+
     @Nullable
     public static Item load(ItemsManager parent, YamlConfiguration config, String id) {
-        // TODO: 加载物品配置
-        ConfigurationSection section;
-        String nameFormat = config.getString("res-name.format");
-        boolean nameUseAliasIfExists = config.getBoolean("res-name.use-alias-if-exists");
-
         int sizeX = config.getInt("size.x"),
             sizeY = config.getInt("size.y"),
             sizeZ = config.getInt("size.z");
@@ -122,34 +151,6 @@ public class Item {
             parent.warn("[items/" + id + "] 领地大小不能小于等于0");
             return null;
         }
-        List<ICondition> conditionsList = new ArrayList<>();
-        List<IAction> conditionsDenyCommands = new ArrayList<>();
-        section = config.getConfigurationSection("conditions");
-        if (section != null) for (String key : section.getKeys(false)) {
-            if (key.equals("deny-commands")) {
-                conditionsDenyCommands.addAll(loadActions(section.getStringList(key)));
-                continue;
-            }
-            String typeStr = section.getString(key + ".type");
-            if (typeStr == null) continue;
-            boolean reversed = typeStr.startsWith("!");
-            String type = reversed ? (typeStr.substring(1)) : typeStr;
-            NumberCondition.Operator numberOperator = NumberCondition.Operator.parse(type);
-            if (numberOperator != null) {
-                String input = section.getString(key + ".input", "");
-                String output = section.getString(key + ".output", "");
-                List<IAction> denyCommands = loadActions(section, key + ".deny-commands");
-                conditionsList.add(new NumberCondition(reversed, input, numberOperator, output, denyCommands));
-            }
-            // TODO: 加载领地创建条件
-        }
-
-        String material = config.getString("item.material");
-        String display = config.getString("item.display");
-        List<String> lore = config.getStringList("item.lore");
-
-        return new Item(id, nameFormat, nameUseAliasIfExists,
-                sizeX, sizeY, sizeZ, conditionsList, conditionsDenyCommands,
-                material, display, lore);
+        return new Item(id, config, sizeX, sizeY, sizeZ);
     }
 }
