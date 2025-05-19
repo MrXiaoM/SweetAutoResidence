@@ -100,12 +100,12 @@ public class SweetAutoResidence extends BukkitPlugin {
                     break;
                 }
             }
+            getLogger().info("内置的适配器: " + adapterClass);
         }
         if (adapterClass == null) {
             warn("未找到可用的领地插件适配器，卸载插件");
             return false;
         }
-        getLogger().info("内置的适配器: " + adapterClass);
         try {
             Class<?> type = Class.forName(adapterClass);
             Constructor<?> constructor = type.getConstructor(SweetAutoResidence.class);
