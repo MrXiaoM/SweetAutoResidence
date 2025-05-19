@@ -10,15 +10,12 @@ val targetJavaVersion = 8
 val shadowGroup = "top.mrxiaom.sweet.autores.libs"
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven("https://repo.codemc.io/repository/maven-public/")
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    maven("https://repo.helpch.at/releases/")
     maven("https://jitpack.io")
     maven("https://repo.rosewooddev.io/repository/public/")
-    maven("https://s01.oss.sonatype.org/content/groups/public/")
-    maven("https://oss.sonatype.org/content/groups/public/")
 }
 
 dependencies {
@@ -30,13 +27,13 @@ dependencies {
     compileOnly("com.github.Zrips:CMILib:1.4.7.4")
     compileOnly(fileTree("libs"))
 
-    implementation("net.kyori:adventure-api:4.17.0")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.4")
-    implementation("net.kyori:adventure-text-minimessage:4.17.0")
+    implementation("net.kyori:adventure-api:4.21.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.4.0")
+    implementation("net.kyori:adventure-text-minimessage:4.21.0")
     implementation("com.github.technicallycoded:FoliaLib:0.4.4")
-    implementation("de.tr7zw:item-nbt-api:2.14.2-SNAPSHOT")
+    implementation("de.tr7zw:item-nbt-api:2.15.0")
     implementation("org.jetbrains:annotations:24.0.0")
-    implementation("top.mrxiaom:PluginBase:1.3.8")
+    implementation("top.mrxiaom:PluginBase:1.4.3")
     implementation(project(":res-ext"))
 }
 java {

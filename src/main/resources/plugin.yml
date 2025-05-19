@@ -3,7 +3,6 @@ version: '${version}'
 main: top.mrxiaom.sweet.autores.SweetAutoResidence
 api-version: 1.13
 softdepend:
-  - Vault
   - PlaceholderAPI
   - CMILib
   - Residence

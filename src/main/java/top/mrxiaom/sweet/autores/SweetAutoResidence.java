@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.pluginbase.BukkitPlugin;
+import top.mrxiaom.pluginbase.economy.EnumEconomy;
 import top.mrxiaom.pluginbase.func.LanguageManager;
 import top.mrxiaom.pluginbase.utils.PAPI;
 import top.mrxiaom.pluginbase.utils.scheduler.FoliaLibScheduler;
@@ -27,7 +28,7 @@ public class SweetAutoResidence extends BukkitPlugin {
                 .adventure(true)
                 .database(false)
                 .reconnectDatabaseWhenReloadConfig(false)
-                .vaultEconomy(true)
+                .economy(EnumEconomy.NONE)
                 .scanIgnore("top.mrxiaom.sweet.autores.libs")
                 .libraries(true)
         );
