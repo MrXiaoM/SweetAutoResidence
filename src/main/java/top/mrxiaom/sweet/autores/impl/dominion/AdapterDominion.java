@@ -40,6 +40,7 @@ public class AdapterDominion extends AbstractPluginHolder implements IResidenceA
         World world = player.getWorld();
         Location[] points = autoPoints(player);
         CuboidDTO cuboidDTO = new CuboidDTO(points[0], points[1]);
+        // TODO: 与其它领地出现区域冲突时返回 null
         return new Selection(cuboidDTO, cuboidDTO.x1(), cuboidDTO.y1(), cuboidDTO.z1(), cuboidDTO.x2(), cuboidDTO.y2(), cuboidDTO.z2());
     }
 
@@ -69,6 +70,7 @@ public class AdapterDominion extends AbstractPluginHolder implements IResidenceA
 
     @Override
     public int getResidenceCount(Player player) {
+        // TODO: 或许应该获取玩家在当前世界的领地数量才对？或者或者应该修改接口适应 Dominion 多世界分别限制的特性
         return dominionAPI.getPlayerOwnDominionDTOs(player.getUniqueId()).size();
     }
 
