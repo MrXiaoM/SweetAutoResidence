@@ -76,13 +76,17 @@ public class SweetAutoResidence extends BukkitPlugin {
         }
         if (adapterClass == null) {
             getLogger().info("未找到外置适配器，正在搜索使用内置适配器");
-            PluginManager pm = Bukkit.getPluginManager();
-            if (pm.isPluginEnabled("Residence")) {
-                adapterClass = "top.mrxiaom.sweet.autores.impl.residence.AdapterResidence";
-            }
-            // TODO: 在这里添加更多领地插件支持
-            getLogger().info("内置的适配器: " + adapterClass);
         }
+        PluginManager pm = Bukkit.getPluginManager();
+        if (adapterClass == null && pm.isPluginEnabled("Dominion")) {
+            adapterClass = "top.mrxiaom.sweet.autores.impl.residence.AdapterDominion";
+        }
+        if (adapterClass == null && pm.isPluginEnabled("Residence")) {
+            adapterClass = "top.mrxiaom.sweet.autores.impl.residence.AdapterResidence";
+        }
+        // TODO: 在这里添加更多领地插件支持
+        getLogger().info("内置的适配器: " + adapterClass);
+
         if (adapterClass == null) {
             warn("未找到可用的领地插件适配器，卸载插件");
             return false;

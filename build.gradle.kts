@@ -16,6 +16,7 @@ repositories {
     maven("https://repo.helpch.at/releases/")
     maven("https://jitpack.io")
     maven("https://repo.rosewooddev.io/repository/public/")
+    maven("https://api.modrinth.com/maven/")
 }
 
 dependencies {
@@ -25,6 +26,8 @@ dependencies {
     compileOnly("net.milkbowl.vault:VaultAPI:1.7")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.github.Zrips:CMILib:1.4.7.4")
+    compileOnly("cn.lunadeer:DominionAPI:4.3")
+    compileOnly(files("libs/Dominion.jar"))
     compileOnly(files("libs/Residence.jar"))
 
     implementation("net.kyori:adventure-api:4.21.0")

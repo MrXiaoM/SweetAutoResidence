@@ -6,6 +6,7 @@ softdepend:
   - PlaceholderAPI
   - CMILib
   - Residence
+  - Dominion
 authors: [ MrXiaoM ]
 commands:
   sweetautoresidence:
