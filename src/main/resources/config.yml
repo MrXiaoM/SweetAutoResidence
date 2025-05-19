@@ -1,3 +1,6 @@
 
+# items 文件夹路径，这个选项用于多服同步配置
+# 以 ./ 开头的是相对于插件数据目录 (/plugins/SweetAutoResidence) 的相对路径
+# 不以 ./ 开头的是绝对路径，或者相对于服务端目录的相对路径
 items-folder:
   - './items'

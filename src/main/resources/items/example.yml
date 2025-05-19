@@ -1,9 +1,10 @@
 
-# 创建的领地名
+# 领地名称设置
 res-name:
-  # 格式（可使用 PAPI 变量）
+  # 领地名格式（可使用 PAPI 变量）
   format: '%player_name%'
-  # 如果已有重命领地，则使用别名（增加下划线和数字）
+  # 如果已有重名领地，则使用别名（增加下划线和数字）
+  # 如果不开启这个选项，出现重名领地时，将不消耗道具，提醒玩家无法创建
   use-alias-if-exists: false
 
 # 领地最大大小
@@ -14,16 +15,26 @@ size:
 
 # 创建条件
 conditions:
+  # 条件名称，唯一，不能为 deny-commands
+  # 可删除这一项，使得玩家无需满足任何额外条件即可创建领地
   无领地:
     input: '%sares_residence_count%'
     type: '=='
     output: 0
+  # 不满足条件时执行命令
   deny-commands:
     - '[message]&e你已经创建过领地了'
 
+# 圈地道具物品配置
 item:
+  # 物品材质，可用以下格式
+  # 原版格式：    '物品ID:子ID#CustomModelData'，如 'WOOL:15', 'PAPER#10000'
+  # base64头颅： 'head-base64-数据值'，可通过 https://minecraft-heads.com/ 中的 For Developers: Value 获取
+  # ItemsAdder：'itemsadder-命名空间:键'，如 'itemsadder-_iainternal:icon_arrow_chest'
   material: 'PAPER'
+  # 物品名称，支持 MiniMessage
   display: '&e&l新人许可'
+  # 物品描述，支持 MiniMessage
   lore:
     - '&f给予新人的免费圈地许可'
     - '&f手持本物品，右键点击创建领地'
