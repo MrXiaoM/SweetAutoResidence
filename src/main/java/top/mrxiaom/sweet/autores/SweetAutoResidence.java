@@ -11,6 +11,8 @@ import top.mrxiaom.pluginbase.func.LanguageManager;
 import top.mrxiaom.pluginbase.utils.PAPI;
 import top.mrxiaom.pluginbase.utils.scheduler.FoliaLibScheduler;
 import top.mrxiaom.sweet.autores.api.IResidenceAdapter;
+import top.mrxiaom.sweet.autores.impl.dominion.AdapterDominion;
+import top.mrxiaom.sweet.autores.impl.residence.AdapterResidence;
 
 import java.io.File;
 import java.io.InputStream;
@@ -39,8 +41,8 @@ public class SweetAutoResidence extends BukkitPlugin {
     }
     private IResidenceAdapter adapter;
     private final Map<String, String> builtInAdapters = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER) {{
-        put("Dominion", "top.mrxiaom.sweet.autores.impl.dominion.AdapterDominion");
-        put("Residence", "top.mrxiaom.sweet.autores.impl.residence.AdapterResidence");
+        put("Dominion", AdapterDominion.class.getName());
+        put("Residence", AdapterResidence.class.getName());
         // TODO: 在这里添加更多领地插件支持
     }};
 
