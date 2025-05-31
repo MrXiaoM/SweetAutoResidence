@@ -35,7 +35,7 @@ dependencies {
     implementation("com.github.technicallycoded:FoliaLib:0.4.4")
     implementation("de.tr7zw:item-nbt-api:2.15.0")
     implementation("org.jetbrains:annotations:24.0.0")
-    implementation("top.mrxiaom:PluginBase:1.4.3")
+    implementation("top.mrxiaom:PluginBase:1.4.5")
 }
 java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)

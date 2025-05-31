@@ -1,38 +1,18 @@
 package top.mrxiaom.sweet.autores;
 
-import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import top.mrxiaom.pluginbase.utils.PlaceholdersExpansion;
 
-public class Placeholders extends PlaceholderExpansion {
-    SweetAutoResidence plugin;
+public class Placeholders extends PlaceholdersExpansion<SweetAutoResidence> {
     public Placeholders(SweetAutoResidence plugin) {
-        this.plugin = plugin;
-    }
-
-    @Override
-    public boolean register() {
-        try {
-            super.unregister();
-        } catch (Throwable ignored) {
-        }
-        return super.register();
+        super(plugin);
     }
 
     @Override
     public @NotNull String getIdentifier() {
         return "sares";
-    }
-
-    @Override
-    public @NotNull String getAuthor() {
-        return String.join(", ", plugin.getDescription().getAuthors());
-    }
-
-    @Override
-    public @NotNull String getVersion() {
-        return plugin.getDescription().getVersion();
     }
 
     @Override
