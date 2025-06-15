@@ -62,7 +62,7 @@ public class ItemClickListener extends AbstractModule implements Listener {
         UUID uuid = player.getUniqueId();
         if (lock.contains(uuid)) return;
         lock.add(uuid);
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        plugin.getScheduler().runTaskAsync(() -> {
             if (handleClick(player, uuid, item, hand, itemStack)) {
                 lock.remove(uuid);
             }
@@ -86,7 +86,7 @@ public class ItemClickListener extends AbstractModule implements Listener {
                 Messages.create__already_exists.tm(player);
                 return true;
             }
-            Bukkit.getScheduler().runTask(plugin, () -> {
+            plugin.getScheduler().runTask(() -> {
                 int amount = itemStack.getAmount();
                 if (amount <= 1) {
                     itemStack.setAmount(0);
