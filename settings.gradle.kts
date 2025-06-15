@@ -29,6 +29,6 @@ if (!residence.exists()) {
 }
 val dominion = libs.resolve("Dominion.jar")
 if (!dominion.exists()) {
-    println("Downloading Dominion-v4.2.0-beta...")
-    download(modrinth("lunadeer-dominion", "v4.2.0-beta", "Dominion-4.2.0-beta-lite.jar") to dominion)
+    println("Downloading Dominion-v4.3.1-beta...")
+    download(modrinth("lunadeer-dominion", "v4.3.1-beta", "Dominion-4.3.1-beta-lite.jar") to dominion)
 }

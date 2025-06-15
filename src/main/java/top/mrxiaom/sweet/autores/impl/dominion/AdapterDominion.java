@@ -27,7 +27,7 @@ public class AdapterDominion extends AbstractPluginHolder implements IResidenceA
     public AdapterDominion(SweetAutoResidence plugin) {
         super(plugin);
         dominion = Dominion.instance;
-        dominionAPI = DominionInterface.instance;
+        dominionAPI = DominionInterface.getInstance();
     }
 
     @Override
