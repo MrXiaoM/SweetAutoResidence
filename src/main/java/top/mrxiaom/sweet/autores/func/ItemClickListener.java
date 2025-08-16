@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -38,6 +39,11 @@ public class ItemClickListener extends AbstractModule implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
+        removeCache(e.getPlayer());
+    }
+
+    @EventHandler
+    public void onChangedWorld(PlayerChangedWorldEvent e) {
         removeCache(e.getPlayer());
     }
 
