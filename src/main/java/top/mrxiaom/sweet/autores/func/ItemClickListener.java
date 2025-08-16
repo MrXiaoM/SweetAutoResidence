@@ -53,15 +53,22 @@ public class ItemClickListener extends AbstractModule implements Listener {
         lock.remove(uuid);
     }
 
+    private boolean isOffHandClick(PlayerInteractEvent e) {
+        try {
+            EquipmentSlot hand = e.getHand();
+            return hand == null || hand.equals(EquipmentSlot.OFF_HAND);
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onClick(PlayerInteractEvent e) {
         if (e.useItemInHand().equals(Event.Result.DENY)) return;
         if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)
                 && !e.getAction().equals(Action.RIGHT_CLICK_AIR)) return;
-        EquipmentSlot hand = e.getHand();
         ItemStack itemStack = e.getItem();
-        if (hand == null || itemStack == null) return;
-        if (hand.equals(EquipmentSlot.OFF_HAND)) return;
+        if (itemStack == null || isOffHandClick(e)) return;
         Player player = e.getPlayer();
         Item item = ItemsManager.inst().match(itemStack);
         if (item == null) return;
