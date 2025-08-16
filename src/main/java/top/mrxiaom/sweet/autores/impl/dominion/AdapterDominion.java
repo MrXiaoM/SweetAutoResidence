@@ -4,9 +4,12 @@ import cn.lunadeer.dominion.Dominion;
 import cn.lunadeer.dominion.DominionInterface;
 import cn.lunadeer.dominion.api.DominionAPI;
 import cn.lunadeer.dominion.api.dtos.CuboidDTO;
+import cn.lunadeer.dominion.api.dtos.DominionDTO;
+import cn.lunadeer.dominion.cache.CacheManager;
 import cn.lunadeer.dominion.configuration.Configuration;
 import cn.lunadeer.dominion.configuration.Limitation;
 import cn.lunadeer.dominion.events.dominion.DominionCreateEvent;
+import cn.lunadeer.dominion.misc.Others;
 import cn.lunadeer.dominion.utils.ParticleUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -17,6 +20,9 @@ import top.mrxiaom.sweet.autores.SweetAutoResidence;
 import top.mrxiaom.sweet.autores.api.IResidenceAdapter;
 import top.mrxiaom.sweet.autores.api.Selection;
 import top.mrxiaom.sweet.autores.func.AbstractPluginHolder;
+
+import java.util.List;
+import java.util.UUID;
 
 import static cn.lunadeer.dominion.misc.Others.autoPoints;
 
@@ -38,9 +44,33 @@ public class AdapterDominion extends AbstractPluginHolder implements IResidenceA
     @Override
     public @Nullable Selection genAutoSelection(Player player, int xSize, int ySize, int zSize) {
         World world = player.getWorld();
+        UUID worldUID = world.getUID();
         Location[] points = autoPoints(player);
         CuboidDTO cuboidDTO = new CuboidDTO(points[0], points[1]);
-        // TODO: 与其它领地出现区域冲突时返回 null
+
+        // 与其它领地出现区域冲突时返回 null
+        // cn.lunadeer.dominion.misc.Asserts#assertDominionIntersect
+        List<DominionDTO> dominions = CacheManager.instance.getCache().getDominionCache().getChildrenOf(-1);
+        for (DominionDTO dom : dominions) {
+            if (!dom.getWorldUid().equals(worldUID)) {
+                continue;
+            }
+            if (cuboidDTO.intersectWith(dom.getCuboid())) {
+                return null;
+            }
+        }
+        if (!Others.bypassLimit(player)) {
+            int spawnProtection = Configuration.serverSpawnProtectionRadius;
+            if (spawnProtection != -1) {
+                Location spawn = world.getSpawnLocation();
+                CuboidDTO spawnCuboid = new CuboidDTO(spawn.getBlockX() - spawnProtection, spawn.getBlockX() + spawnProtection,
+                        spawn.getBlockY() - spawnProtection, spawn.getBlockY() + spawnProtection,
+                        spawn.getBlockZ() - spawnProtection, spawn.getBlockZ() + spawnProtection);
+                if (cuboidDTO.intersectWith(spawnCuboid)) {
+                    return null;
+                }
+            }
+        }
         return new Selection(cuboidDTO, cuboidDTO.x1(), cuboidDTO.y1(), cuboidDTO.z1(), cuboidDTO.x2(), cuboidDTO.y2(), cuboidDTO.z2());
     }
 
