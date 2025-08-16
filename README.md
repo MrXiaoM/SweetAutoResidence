@@ -16,6 +16,18 @@ Minecraft 领地自动圈地道具插件
 
 更多插件可通过编写附属去兼容，详见 [SweetAutoResidence#checkAdapter](src/main/java/top/mrxiaom/sweet/autores/SweetAutoResidence.java)。
 
+## 命令
+
+根命令为 `/sweetautoresidence`，别名为 `/sautoresidence`, `/sautores`, `/sares`, `/sar`  
+以 `<>` 包裹的为必选参数，以 `[]` 包裹的为可选参数。
+
+所有命令均只能由管理员执行。
+
+| 命令                           | 描述            |
+|------------------------------|---------------|
+| `/sares give <物品> [数量] [玩家]` | 给予自己或某人指定圈地道具 |
+| `/sares reload`              | 重载插件配置文件      |
+
 ## 变量
 
 本插件向 PlaceholderAPI 注册了以下变量
