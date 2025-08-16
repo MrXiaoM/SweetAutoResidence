@@ -4,3 +4,14 @@
 # 不以 ./ 开头的是绝对路径，或者相对于服务端目录的相对路径
 items-folder:
   - './items'
+
+# 随机领地名字典
+# 使用 %sares_random_<字典名>% 可随机生成一个名字
+# 如果变量指定的字典不存在，将会生成一个空字符串
+random-dictionaries:
+  # 默认字典，可往下复制添加
+  common:
+    # 字符列表
+    chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_'
+    # 生成长度，可用固定长度或 A-B 格式指定随机长度
+    length: 8

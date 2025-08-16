@@ -4,6 +4,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.pluginbase.utils.PlaceholdersExpansion;
+import top.mrxiaom.sweet.autores.func.DictionaryManager;
+import top.mrxiaom.sweet.autores.func.entry.Dictionary;
 
 public class Placeholders extends PlaceholdersExpansion<SweetAutoResidence> {
     public Placeholders(SweetAutoResidence plugin) {
@@ -22,6 +24,11 @@ public class Placeholders extends PlaceholdersExpansion<SweetAutoResidence> {
         }
         if (params.equalsIgnoreCase("residence_max_count")) {
             return String.valueOf(plugin.getAdapter().getResidenceMaxCount(player));
+        }
+        if (params.startsWith("random_")) {
+            String id = params.substring(7);
+            Dictionary dictionary = DictionaryManager.inst().get(id);
+            return dictionary == null ? "" : dictionary.generate();
         }
         return super.onPlaceholderRequest(player, params);
     }

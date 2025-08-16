@@ -2,6 +2,7 @@
 # 领地名称设置
 res-name:
   # 领地名格式（可使用 PAPI 变量）
+  # 使用 %sares_random_common% 可生成随机名字，详见 config.yml 注释
   format: '%player_name%'
   # 如果已有重名领地，则使用别名（增加下划线和数字）
   # 如果不开启这个选项，出现重名领地时，将不消耗道具，提醒玩家无法创建
