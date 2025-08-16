@@ -99,6 +99,10 @@ public class ItemClickListener extends AbstractModule implements Listener {
                 Messages.create__already_exists.tm(player);
                 return true;
             }
+            if (resName.trim().isEmpty()) {
+                Messages.create__empty_name.tm(player);
+                return true;
+            }
             plugin.getScheduler().runTask(() -> {
                 int amount = itemStack.getAmount();
                 if (amount <= 1) {

@@ -19,6 +19,7 @@ public enum Messages implements IHolderAccessor {
     create__no_selection("&e请先手持道具，右键点击查看圈地范围"),
     create__no_available("&e你的领地数量已到达上限"),
     create__already_exists("&e同名的领地已存在，无法创建"),
+    create__empty_name("&e生成的领地名为空，无法创建，请联系服务器管理员"),
     create__failed("&e创建领地出现错误，已输出到后台日志，请联系服务器管理员"),
     selection__success("&a已选中区域，Shift+右键确认圈地"),
 
