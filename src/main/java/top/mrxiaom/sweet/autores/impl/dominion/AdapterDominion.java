@@ -77,8 +77,7 @@ public class AdapterDominion extends AbstractPluginHolder implements IResidenceA
     @Override
     public boolean isResidenceExists(String resName) {
         try {
-            dominionAPI.getDominion(resName);
-            return true;
+            return dominionAPI.getDominion(resName) != null;
         } catch (Throwable t) {
             return false;
         }
