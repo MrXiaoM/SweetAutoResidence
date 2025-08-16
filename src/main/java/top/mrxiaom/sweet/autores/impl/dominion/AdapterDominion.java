@@ -99,8 +99,16 @@ public class AdapterDominion extends AbstractPluginHolder implements IResidenceA
 
     @Override
     public int getResidenceCount(Player player) {
-        // TODO: 或许应该获取玩家在当前世界的领地数量才对？或者或者应该修改接口适应 Dominion 多世界分别限制的特性
-        return dominionAPI.getPlayerOwnDominionDTOs(player.getUniqueId()).size();
+        int count = 0;
+        UUID worldUid = player.getWorld().getUID();
+        // cn.lunadeer.dominion.misc.Asserts#assertPlayerDominionAmount
+        List<DominionDTO> dominions = CacheManager.instance.getCache().getDominionCache().getPlayerOwnDominionDTOs(player.getUniqueId());
+        for (DominionDTO dom : dominions) {
+            if (dom.getWorldUid().equals(worldUid)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override
