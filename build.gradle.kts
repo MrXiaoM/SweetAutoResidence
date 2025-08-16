@@ -16,7 +16,6 @@ repositories {
     maven("https://repo.helpch.at/releases/")
     maven("https://jitpack.io")
     maven("https://repo.rosewooddev.io/repository/public/")
-    maven("https://api.modrinth.com/maven/")
 }
 
 dependencies {
@@ -29,24 +28,23 @@ dependencies {
     compileOnly(files("libs/Dominion.jar"))
     compileOnly(files("libs/Residence.jar"))
 
-    implementation("net.kyori:adventure-api:4.21.0")
+    implementation("net.kyori:adventure-api:4.22.0")
     implementation("net.kyori:adventure-platform-bukkit:4.4.0")
-    implementation("net.kyori:adventure-text-minimessage:4.21.0")
+    implementation("net.kyori:adventure-text-minimessage:4.22.0")
     implementation("com.github.technicallycoded:FoliaLib:0.4.4")
-    implementation("de.tr7zw:item-nbt-api:2.15.0")
+    implementation("de.tr7zw:item-nbt-api:2.15.2-SNAPSHOT")
     implementation("org.jetbrains:annotations:24.0.0")
-    implementation("top.mrxiaom:PluginBase:1.4.7")
+    implementation("top.mrxiaom:PluginBase:1.5.8")
 }
 java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     if (JavaVersion.current() < javaVersion) {
         toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
     }
+    withSourcesJar()
 }
 tasks {
     shadowJar {
-        archiveClassifier.set("")
-        destinationDirectory.set(rootProject.file("out"))
         mapOf(
             "org.intellij.lang.annotations" to "annotations.intellij",
             "org.jetbrains.annotations" to "annotations.jetbrains",
@@ -58,11 +56,14 @@ tasks {
             relocate(original, "$shadowGroup.$target")
         }
     }
-    jar {
-        archiveClassifier.set("api")
+    val copyTask = create<Copy>("copyBuildArtifact") {
+        dependsOn(shadowJar)
+        from(shadowJar.get().outputs)
+        rename { "${project.name}-$version.jar" }
+        into(rootProject.file("out"))
     }
     build {
-        dependsOn(shadowJar)
+        dependsOn(copyTask)
     }
     withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"

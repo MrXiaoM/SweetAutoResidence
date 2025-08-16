@@ -4,7 +4,7 @@ import java.net.URL
 rootProject.name = "SweetAutoResidence"
 
 if (File("neoworld").exists()) {
-    include(":neoworld")
+    //include(":neoworld")
 }
 fun modrinth(resource: String, version: String, file: String): String {
     return "https://api.modrinth.com/maven/maven/modrinth/$resource/$version/$file"
@@ -24,11 +24,13 @@ fun download(pair: Pair<String, File>) {
 val libs = settingsDir.absoluteFile.resolve("libs").also { it.mkdirs() }
 val residence = libs.resolve("Residence.jar")
 if (!residence.exists()) {
-    println("Downloading Residence-5.1.5.2...")
-    download("https://zrips.net/Residence/download.php?file=Residence5.1.5.2.jar" to residence)
+    val version = "5.1.7.7"
+    println("Downloading Residence-$version...")
+    download("https://zrips.net/Residence/download.php?file=Residence$version.jar" to residence)
 }
 val dominion = libs.resolve("Dominion.jar")
 if (!dominion.exists()) {
-    println("Downloading Dominion-v4.3.1-beta...")
-    download(modrinth("lunadeer-dominion", "v4.3.1-beta", "Dominion-4.3.1-beta-lite.jar") to dominion)
+    val version = "4.5.2-beta"
+    println("Downloading Dominion-v$version...")
+    download(modrinth("lunadeer-dominion", "v$version", "Dominion-$version-lite.jar") to dominion)
 }
