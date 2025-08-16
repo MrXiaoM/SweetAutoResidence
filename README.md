@@ -27,3 +27,28 @@ dependencies {
     compileOnly("com.github.MrXiaoM:SweetAutoResidence:$VERSION")
 }
 ```
+
+## 编写领地适配器附属
+
+编写一个类，实现 `top.mrxiaom.sweet.autores.api.IResidenceAdapter`，可参考内置的 [AdapterResidence](https://github.com/MrXiaoM/SweetAutoResidence/blob/main/src/main/java/top/mrxiaom/sweet/autores/impl/residence/AdapterResidence.java)。
+
+这个类必须要有一个满足条件的构造函数：有且仅有一个类型为 `SweetAutoResidence` (本插件主类) 的参数。
+```java
+package org.example;
+
+import top.mrxiaom.sweet.autores.SweetAutoResidence;
+import top.mrxiaom.sweet.autores.api.IResidenceAdapter;
+
+public class MyAdapter implements IResidenceAdapter {
+    public MyAdapter(SweetAutoResidence plugin) {
+        // TODO
+    }
+}
+```
+
+然后添加资源文件 `residence-adapter.yml` 到 jar，写入如下内容
+```yaml
+class: '你实现的类的引用路径，例如 org.example.MyAdapter'
+```
+
+将编译后的领地适配器附属 jar 文件放到 `plugins/SweetAutoResidence/libraries/` 目录中，重启服务器即可使用。
