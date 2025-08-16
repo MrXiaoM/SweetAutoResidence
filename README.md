@@ -16,6 +16,16 @@ Minecraft 领地自动圈地道具插件
 
 更多插件可通过编写附属去兼容，详见 [SweetAutoResidence#checkAdapter](src/main/java/top/mrxiaom/sweet/autores/SweetAutoResidence.java)。
 
+## 变量
+
+本插件向 PlaceholderAPI 注册了以下变量
+
+```
+%sares_residence_count%       玩家当前领地数量
+%sares_residence_max_count%   玩家当前最大领地数量限制
+%sares_random_<字典名>%        随机生成一个名字，详见 config.yml
+```
+
 ## 开发者
 
 [![jitpack](https://jitpack.io/v/MrXiaoM/SweetAutoResidence.svg)](https://jitpack.io/#MrXiaoM/SweetAutoResidence)
