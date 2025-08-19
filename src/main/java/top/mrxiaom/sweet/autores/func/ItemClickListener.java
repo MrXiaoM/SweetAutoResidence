@@ -1,5 +1,6 @@
 package top.mrxiaom.sweet.autores.func;
 
+import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -83,6 +84,14 @@ public class ItemClickListener extends AbstractModule implements Listener {
     }
 
     private boolean handleClick(Player player, UUID uuid, Item item, ItemStack itemStack) {
+        if (NBT.get(itemStack, nbt -> {
+            UUID bindUUID = nbt.getUUID("SWEET_AUTO_RESIDENCE_BIND_UUID");
+            String bindName = nbt.getString("SWEET_AUTO_RESIDENCE_BIND_NAME");
+            if (bindUUID == null || bindName == null || bindName.isEmpty()) return false;
+            if (player.getUniqueId().equals(bindUUID) || player.getName().equals(bindName)) return false;
+            Messages.item__bind_deny.tm(player);
+            return true;
+        })) return true;
         if (player.isSneaking()) { // 确认圈地
             SelectionCache cache = caches.remove(uuid);
             if (cache == null || !cache.isValid(player, item)) {

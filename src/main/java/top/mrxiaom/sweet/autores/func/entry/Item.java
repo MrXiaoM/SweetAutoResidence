@@ -13,6 +13,7 @@ import top.mrxiaom.pluginbase.utils.AdventureItemStack;
 import top.mrxiaom.pluginbase.utils.ItemStackUtil;
 import top.mrxiaom.pluginbase.utils.PAPI;
 import top.mrxiaom.pluginbase.utils.Pair;
+import top.mrxiaom.sweet.autores.Messages;
 import top.mrxiaom.sweet.autores.SweetAutoResidence;
 import top.mrxiaom.sweet.autores.api.IResidenceAdapter;
 import top.mrxiaom.sweet.autores.conditions.ICondition;
@@ -119,6 +120,11 @@ public class Item {
 
     @Nullable
     public ItemStack generateItem(int amount) {
+        return generateItem(amount, null);
+    }
+
+    @Nullable
+    public ItemStack generateItem(int amount, @Nullable Player bindPlayer) {
         if (amount <= 0) {
             return null;
         }
@@ -129,9 +135,19 @@ public class Item {
         int stackSize = item.getType().getMaxStackSize();
         item.setAmount(Math.min(amount, stackSize));
         AdventureItemStack.setItemDisplayName(item, itemDisplay);
-        AdventureItemStack.setItemLoreMiniMessage(item, itemLore);
+        if (bindPlayer == null) {
+            AdventureItemStack.setItemLoreMiniMessage(item, itemLore);
+        } else {
+            List<String> lore = new ArrayList<>(itemLore);
+            lore.addAll(Messages.item__lore_bind.list(Pair.of("%player%", bindPlayer.getName())));
+            AdventureItemStack.setItemLoreMiniMessage(item, lore);
+        }
         NBT.modify(item, nbt -> {
             nbt.setString("SWEET_AUTO_RESIDENCE_ID", id);
+            if (bindPlayer != null) {
+                nbt.setUUID("SWEET_AUTO_RESIDENCE_BIND_UUID", bindPlayer.getUniqueId());
+                nbt.setString("SWEET_AUTO_RESIDENCE_BIND_NAME", bindPlayer.getName());
+            }
         });
         return item;
     }

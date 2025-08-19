@@ -23,6 +23,9 @@ public enum Messages implements IHolderAccessor {
     create__failed("&e创建领地出现错误，已输出到后台日志，请联系服务器管理员"),
     selection__success("&a已选中区域，Shift+右键确认圈地"),
 
+    item__lore_bind("", "&e已绑定: %player%"),
+    item__bind_deny("&e只有已绑定到该物品的玩家可以使用该物品!"),
+
     ;
 
     Messages(String defaultValue) {

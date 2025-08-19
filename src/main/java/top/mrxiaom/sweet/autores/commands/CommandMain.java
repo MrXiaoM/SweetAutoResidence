@@ -39,8 +39,15 @@ public class CommandMain extends AbstractModule implements CommandExecutor, TabC
             if (i == null) {
                 return Messages.not_integer.tm(sender);
             }
+            boolean bind = false;
+            for (String s : args) {
+                if (s.equals("-b") | s.equals("--bind")) {
+                    bind = true;
+                    break;
+                }
+            }
             Player player;
-            if (args.length >= 4) {
+            if (args.length >= 4 && !args[3].equals("-b") && !args[3].equals("--bind")) {
                 player = Util.getOnlinePlayer(args[3]).orElse(null);
                 if (player == null) {
                     return Messages.player_not_online.tm(sender);
@@ -52,7 +59,7 @@ public class CommandMain extends AbstractModule implements CommandExecutor, TabC
                     return Messages.player_only.tm(sender);
                 }
             }
-            ItemStackUtil.giveItemToPlayer(player, item.generateItem(i));
+            ItemStackUtil.giveItemToPlayer(player, item.generateItem(i, bind ? player : null));
             return Messages.command__give_success.tm(sender,
                     Pair.of("%player%", player.getName()),
                     Pair.of("%item%", item.itemDisplay),
