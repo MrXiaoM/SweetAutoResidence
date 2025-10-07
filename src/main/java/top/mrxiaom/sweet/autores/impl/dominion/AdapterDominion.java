@@ -24,8 +24,6 @@ import top.mrxiaom.sweet.autores.func.AbstractPluginHolder;
 import java.util.List;
 import java.util.UUID;
 
-import static cn.lunadeer.dominion.misc.Others.autoPoints;
-
 @SuppressWarnings({"unused"})
 public class AdapterDominion extends AbstractPluginHolder implements IResidenceAdapter {
     DominionAPI dominionAPI;
@@ -55,7 +53,6 @@ public class AdapterDominion extends AbstractPluginHolder implements IResidenceA
             location1.setY(Configuration.getPlayerLimitation(player).getWorldSettings(player.getWorld()).noLowerThan);
             location2.setY((Configuration.getPlayerLimitation(player).getWorldSettings(player.getWorld()).noHigherThan - 1));
         }
-        Location[] points = autoPoints(player);
         CuboidDTO cuboidDTO = new CuboidDTO(location1, location2);
 
         // 与其它领地出现区域冲突时返回 null

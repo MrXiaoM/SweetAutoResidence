@@ -1,5 +1,5 @@
 package top.mrxiaom.sweet.autores.commands;
-        
+
 import com.google.common.collect.Lists;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,7 +19,9 @@ import top.mrxiaom.sweet.autores.func.AbstractModule;
 import top.mrxiaom.sweet.autores.func.ItemsManager;
 import top.mrxiaom.sweet.autores.func.entry.Item;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @AutoRegister
 public class CommandMain extends AbstractModule implements CommandExecutor, TabCompleter, Listener {

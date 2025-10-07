@@ -21,7 +21,10 @@ import top.mrxiaom.sweet.autores.api.Selection;
 import top.mrxiaom.sweet.autores.func.entry.Item;
 import top.mrxiaom.sweet.autores.func.entry.SelectionCache;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @AutoRegister
