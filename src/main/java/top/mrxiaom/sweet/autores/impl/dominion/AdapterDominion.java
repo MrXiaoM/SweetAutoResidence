@@ -8,8 +8,8 @@ import cn.lunadeer.dominion.api.dtos.DominionDTO;
 import cn.lunadeer.dominion.cache.CacheManager;
 import cn.lunadeer.dominion.configuration.Configuration;
 import cn.lunadeer.dominion.configuration.Limitation;
-import cn.lunadeer.dominion.events.dominion.DominionCreateEvent;
 import cn.lunadeer.dominion.misc.Others;
+import cn.lunadeer.dominion.providers.DominionProvider;
 import cn.lunadeer.dominion.utils.ParticleUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -26,7 +26,7 @@ import java.util.UUID;
 
 import static cn.lunadeer.dominion.misc.Others.autoPoints;
 
-@SuppressWarnings({"unused", "UnstableApiUsage"})
+@SuppressWarnings({"unused"})
 public class AdapterDominion extends AbstractPluginHolder implements IResidenceAdapter {
     DominionAPI dominionAPI;
     Dominion dominion;
@@ -86,15 +86,14 @@ public class AdapterDominion extends AbstractPluginHolder implements IResidenceA
     @Override
     public void createResidence(Player player, String resName, Selection area) {
         CuboidDTO cuboidDTO = (CuboidDTO) area.tag;
-        DominionCreateEvent event = new DominionCreateEvent(
-                player,
-                resName,
-                player.getUniqueId(),
-                player.getWorld(), cuboidDTO,
-                null
+        DominionProvider.getInstance().createDominion(
+                /*operator:*/player,
+                /*name:*/resName,
+                /*owner:*/player.getUniqueId(),
+                /*world:*/player.getWorld(), /*cuboid:*/cuboidDTO,
+                /*parent:*/null,
+                /*skipEconomy:*/true
         );
-        event.setSkipEconomy(true);
-        event.call();
     }
 
     @Override
