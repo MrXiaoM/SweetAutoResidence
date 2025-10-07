@@ -45,8 +45,18 @@ public class AdapterDominion extends AbstractPluginHolder implements IResidenceA
     public @Nullable Selection genAutoSelection(Player player, int xSize, int ySize, int zSize) {
         World world = player.getWorld();
         UUID worldUID = world.getUID();
+
+        // 自动选区方法
+        // cn.lunadeer.dominion.misc.Others#autoPoints
+        Location location = player.getLocation();
+        Location location1 = new Location(location.getWorld(), location.getX() - ((double)xSize / 2.0), location.getY() - ((double)ySize / 2.0), location.getZ() - ((double)zSize / 2.0));
+        Location location2 = new Location(location.getWorld(), location.getX() + ((double)xSize / 2.0), location.getY() + ((double)ySize / 2.0), location.getZ() + ((double)zSize / 2.0));
+        if (Configuration.getPlayerLimitation(player).getWorldSettings(player.getWorld()).autoIncludeVertical) {
+            location1.setY(Configuration.getPlayerLimitation(player).getWorldSettings(player.getWorld()).noLowerThan);
+            location2.setY((Configuration.getPlayerLimitation(player).getWorldSettings(player.getWorld()).noHigherThan - 1));
+        }
         Location[] points = autoPoints(player);
-        CuboidDTO cuboidDTO = new CuboidDTO(points[0], points[1]);
+        CuboidDTO cuboidDTO = new CuboidDTO(location1, location2);
 
         // 与其它领地出现区域冲突时返回 null
         // cn.lunadeer.dominion.misc.Asserts#assertDominionIntersect
