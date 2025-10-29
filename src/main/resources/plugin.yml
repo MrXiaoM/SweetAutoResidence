@@ -9,6 +9,8 @@ softdepend:
   - Residence
   - Dominion
 authors: [ MrXiaoM ]
+libraries:
+  - "org.jetbrains:annotations:24.0.0"
 commands:
   sweetautoresidence:
     description: 'The main command of SweetAutoResidence'

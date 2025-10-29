@@ -11,7 +11,7 @@ import top.mrxiaom.pluginbase.actions.ActionProviders;
 import top.mrxiaom.pluginbase.api.IAction;
 import top.mrxiaom.pluginbase.utils.AdventureItemStack;
 import top.mrxiaom.pluginbase.utils.ItemStackUtil;
-import top.mrxiaom.pluginbase.utils.PAPI;
+import top.mrxiaom.pluginbase.utils.depend.PAPI;
 import top.mrxiaom.pluginbase.utils.Pair;
 import top.mrxiaom.sweet.autores.Messages;
 import top.mrxiaom.sweet.autores.SweetAutoResidence;

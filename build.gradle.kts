@@ -1,12 +1,21 @@
 plugins {
     java
     `maven-publish`
-    id ("com.github.johnrengelman.shadow") version "7.0.0"
+    id("com.gradleup.shadow") version "8.3.0"
+    id("com.github.gmazzo.buildconfig") version "5.6.7"
 }
+
+buildscript {
+    repositories.mavenCentral()
+    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.0")
+}
+val base = top.mrxiaom.gradle.LibraryHelper(project)
 
 group = "top.mrxiaom.sweet.autores"
 version = "1.0.1"
 val targetJavaVersion = 8
+val pluginBaseModules = listOf("library", "paper", "actions", "l10n")
+val pluginBaseVersion = "1.7.0"
 val shadowGroup = "top.mrxiaom.sweet.autores.libs"
 
 repositories {
@@ -25,16 +34,30 @@ dependencies {
     compileOnly("net.milkbowl.vault:VaultAPI:1.7")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.github.Zrips:CMILib:1.4.7.4")
+    compileOnly("org.jetbrains:annotations:24.0.0")
     compileOnly(files("libs/Dominion.jar"))
     compileOnly(files("libs/Residence.jar"))
 
-    implementation("net.kyori:adventure-api:4.22.0")
-    implementation("net.kyori:adventure-platform-bukkit:4.4.0")
-    implementation("net.kyori:adventure-text-minimessage:4.22.0")
+    base.library("net.kyori:adventure-api:4.22.0")
+    base.library("net.kyori:adventure-platform-bukkit:4.4.0")
+    base.library("net.kyori:adventure-text-minimessage:4.22.0")
+    base.library("net.kyori:adventure-text-serializer-plain:4.22.0")
+
     implementation("com.github.technicallycoded:FoliaLib:0.4.4")
-    implementation("de.tr7zw:item-nbt-api:2.15.3-SNAPSHOT")
-    implementation("org.jetbrains:annotations:24.0.0")
-    implementation("top.mrxiaom.pluginbase:library:1.6.4")
+    implementation("de.tr7zw:item-nbt-api:2.15.3")
+    for (artifact in pluginBaseModules) {
+        implementation("top.mrxiaom.pluginbase:$artifact:$pluginBaseVersion")
+    }
+    implementation("top.mrxiaom:LibrariesResolver-Lite:$pluginBaseVersion")
+}
+buildConfig {
+    className("BuildConstants")
+    packageName("top.mrxiaom.sweet.autores")
+
+    base.doResolveLibraries()
+    buildConfigField("String", "VERSION", "\"${project.version}\"")
+    buildConfigField("java.time.Instant", "BUILD_TIME", "java.time.Instant.ofEpochSecond(${System.currentTimeMillis() / 1000L}L)")
+    buildConfigField("String[]", "RESOLVED_LIBRARIES", base.join())
 }
 java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
@@ -46,11 +69,8 @@ java {
 tasks {
     shadowJar {
         mapOf(
-            "org.intellij.lang.annotations" to "annotations.intellij",
-            "org.jetbrains.annotations" to "annotations.jetbrains",
             "top.mrxiaom.pluginbase" to "base",
             "de.tr7zw.changeme.nbtapi" to "nbtapi",
-            "net.kyori" to "kyori",
             "com.tcoded.folialib" to "folialib",
         ).forEach { (original, target) ->
             relocate(original, "$shadowGroup.$target")

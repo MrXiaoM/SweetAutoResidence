@@ -3,7 +3,7 @@ package top.mrxiaom.sweet.autores;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import top.mrxiaom.pluginbase.utils.PlaceholdersExpansion;
+import top.mrxiaom.pluginbase.utils.depend.PlaceholdersExpansion;
 import top.mrxiaom.sweet.autores.func.DictionaryManager;
 import top.mrxiaom.sweet.autores.func.entry.Dictionary;
 

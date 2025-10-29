@@ -3,7 +3,7 @@ package top.mrxiaom.sweet.autores.conditions;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.pluginbase.api.IAction;
-import top.mrxiaom.pluginbase.utils.PAPI;
+import top.mrxiaom.pluginbase.utils.depend.PAPI;
 import top.mrxiaom.pluginbase.utils.Util;
 
 import java.util.List;
