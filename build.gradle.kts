@@ -44,7 +44,7 @@ dependencies {
     base.library("net.kyori:adventure-text-serializer-plain:4.22.0")
 
     implementation("com.github.technicallycoded:FoliaLib:0.4.4")
-    implementation("de.tr7zw:item-nbt-api:2.15.3")
+    implementation("de.tr7zw:item-nbt-api:2.15.5")
     for (artifact in pluginBaseModules) {
         implementation("top.mrxiaom.pluginbase:$artifact:$pluginBaseVersion")
     }
