@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -51,6 +52,14 @@ public class ItemClickListener extends AbstractModule implements Listener {
         removeCache(e.getPlayer());
     }
 
+    @EventHandler
+    public void onPlace(BlockPlaceEvent e) {
+        ItemStack itemStack = e.getItemInHand();
+        if (ItemsManager.inst().match(itemStack) != null) {
+            e.setCancelled(true);
+        }
+    }
+
     private void removeCache(Player player) {
         UUID uuid = player.getUniqueId();
         caches.remove(uuid);
@@ -76,6 +85,7 @@ public class ItemClickListener extends AbstractModule implements Listener {
         Player player = e.getPlayer();
         Item item = ItemsManager.inst().match(itemStack);
         if (item == null) return;
+        e.setCancelled(true);
         UUID uuid = player.getUniqueId();
         if (lock.contains(uuid)) return;
         lock.add(uuid);
