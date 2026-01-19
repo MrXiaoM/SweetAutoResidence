@@ -85,6 +85,7 @@ public class ItemClickListener extends AbstractModule implements Listener {
         Player player = e.getPlayer();
         Item item = ItemsManager.inst().match(itemStack);
         if (item == null) return;
+        e.setCancelled(true);
         UUID uuid = player.getUniqueId();
         if (lock.contains(uuid)) return;
         lock.add(uuid);
