@@ -7,15 +7,14 @@ plugins {
 
 buildscript {
     repositories.mavenCentral()
-    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.0")
+    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.4")
 }
 val base = top.mrxiaom.gradle.LibraryHelper(project)
 
 group = "top.mrxiaom.sweet.autores"
 version = "1.0.1"
 val targetJavaVersion = 8
-val pluginBaseModules = listOf("library", "paper", "actions", "l10n")
-val pluginBaseVersion = "1.7.0"
+val pluginBaseModules = base.modules.run { listOf(library, paper, actions, l10n) }
 val shadowGroup = "top.mrxiaom.sweet.autores.libs"
 
 repositories {
@@ -46,9 +45,9 @@ dependencies {
     implementation("com.github.technicallycoded:FoliaLib:0.4.4")
     implementation("de.tr7zw:item-nbt-api:2.15.5")
     for (artifact in pluginBaseModules) {
-        implementation("top.mrxiaom.pluginbase:$artifact:$pluginBaseVersion")
+        implementation(artifact)
     }
-    implementation("top.mrxiaom:LibrariesResolver-Lite:$pluginBaseVersion")
+    implementation(base.resolver.lite)
 }
 buildConfig {
     className("BuildConstants")

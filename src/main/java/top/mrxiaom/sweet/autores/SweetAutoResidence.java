@@ -11,6 +11,7 @@ import top.mrxiaom.pluginbase.func.LanguageManager;
 import top.mrxiaom.pluginbase.paper.PaperFactory;
 import top.mrxiaom.pluginbase.resolver.DefaultLibraryResolver;
 import top.mrxiaom.pluginbase.utils.ClassLoaderWrapper;
+import top.mrxiaom.pluginbase.utils.ConfigUtils;
 import top.mrxiaom.pluginbase.utils.depend.PAPI;
 import top.mrxiaom.pluginbase.utils.inventory.InventoryFactory;
 import top.mrxiaom.pluginbase.utils.item.ItemEditor;
@@ -51,6 +52,10 @@ public class SweetAutoResidence extends BukkitPlugin {
                 : new File(this.getDataFolder(), "libraries");
         DefaultLibraryResolver resolver = new DefaultLibraryResolver(getLogger(), librariesDir);
 
+        YamlConfiguration overrideLibraries = ConfigUtils.load(resolve("./.override-libraries.yml"));
+        for (String key : overrideLibraries.getKeys(false)) {
+            resolver.getStartsReplacer().put(key, overrideLibraries.getString(key));
+        }
         resolver.addResolvedLibrary(BuildConstants.RESOLVED_LIBRARIES);
 
         List<URL> libraries = resolver.doResolve();
