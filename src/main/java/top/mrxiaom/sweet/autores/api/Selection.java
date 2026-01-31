@@ -3,6 +3,8 @@ package top.mrxiaom.sweet.autores.api;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.util.BlockVector;
+import org.bukkit.util.Vector;
 
 /**
  * 领地选择区域
@@ -43,6 +45,24 @@ public class Selection {
         this.y2 = y2;
         this.z2 = z2;
         return this;
+    }
+    public void offset(Vector v) {
+        offset(v.getBlockX(), v.getBlockY(), v.getBlockZ());
+    }
+
+    public void offset(int offsetX, int offsetY, int offsetZ) {
+        if (offsetX != 0) {
+            x1 += offsetX;
+            x2 += offsetX;
+        }
+        if (offsetY != 0) {
+            y1 += offsetY;
+            y2 += offsetY;
+        }
+        if (offsetZ != 0) {
+            z1 += offsetZ;
+            z2 += offsetZ;
+        }
     }
 
     public Location getPos1(World world) {

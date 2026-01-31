@@ -6,6 +6,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.pluginbase.actions.ActionProviders;
 import top.mrxiaom.pluginbase.api.IAction;
@@ -16,6 +17,7 @@ import top.mrxiaom.pluginbase.utils.Pair;
 import top.mrxiaom.sweet.autores.Messages;
 import top.mrxiaom.sweet.autores.SweetAutoResidence;
 import top.mrxiaom.sweet.autores.api.IResidenceAdapter;
+import top.mrxiaom.sweet.autores.api.Selection;
 import top.mrxiaom.sweet.autores.conditions.ICondition;
 import top.mrxiaom.sweet.autores.conditions.NumberCondition;
 import top.mrxiaom.sweet.autores.func.ItemsManager;
@@ -30,6 +32,8 @@ public class Item {
     public final String nameFormat;
     public final boolean nameUseAliasIfExists;
     public final int sizeX, sizeY, sizeZ;
+    public final int offsetX, offsetY, offsetZ;
+    public final double offsetFront;
     public final List<ICondition> conditionsList;
     public final List<IAction> conditionsDenyCommands;
     public final String itemMaterial;
@@ -42,6 +46,11 @@ public class Item {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.sizeZ = sizeZ;
+
+        this.offsetX = config.getInt("offset.x", 0);
+        this.offsetY = config.getInt("offset.y", 0);
+        this.offsetZ = config.getInt("offset.z", 0);
+        this.offsetFront = config.getDouble("offset.front", 0.0);
 
         ConfigurationSection section;
         this.nameFormat = config.getString("res-name.format");
@@ -156,6 +165,15 @@ public class Item {
         List<Pair<String, Object>> pairs = new ArrayList<>();
         pairs.add(Pair.of("%name%", resName));
         ActionProviders.run(SweetAutoResidence.getInstance(), player, useCommands, pairs);
+    }
+
+    public void applyOffset(Selection selection, Player player) {
+        if (offsetFront != 0) {
+            Vector direction = player.getLocation().getDirection().clone();
+            Vector offset = direction.setY(0).normalize().multiply(offsetFront);
+            selection.offset(offset);
+        }
+        selection.offset(offsetX, offsetY, offsetZ);
     }
 
     @Nullable
