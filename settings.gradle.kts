@@ -1,5 +1,6 @@
 import java.io.FileOutputStream
 import java.net.URL
+import java.util.Locale
 
 rootProject.name = "SweetAutoResidence"
 
@@ -24,13 +25,18 @@ fun download(pair: Pair<String, File>) {
 val libs = settingsDir.absoluteFile.resolve("libs").also { it.mkdirs() }
 val residence = libs.resolve("Residence.jar")
 if (!residence.exists()) {
-    val version = "5.1.7.7"
+    val version = "6.0.1.4"
     println("Downloading Residence-$version...")
     download("https://zrips.net/Residence/download.php?file=Residence$version.jar" to residence)
 }
 val dominion = libs.resolve("Dominion.jar")
 if (!dominion.exists()) {
-    val version = "4.7.0-beta"
+    val version = "4.7.3-RLS"
+    val url = "https://github.com/LunaDeerMC/Dominion/releases/download/v$version/Dominion-$version-full.jar"
     println("Downloading Dominion-v$version...")
-    download(modrinth("lunadeer-dominion", "v$version", "Dominion-$version-lite.jar") to dominion)
+    if (Locale.getDefault().country == "CN") {
+        download("https://ghproxy.imciel.com/$url" to dominion)
+    } else {
+        download(url to dominion)
+    }
 }
