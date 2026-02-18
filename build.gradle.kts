@@ -12,7 +12,7 @@ buildscript {
 val base = top.mrxiaom.gradle.LibraryHelper(project)
 
 group = "top.mrxiaom.sweet.autores"
-version = "1.0.2"
+version = "1.0.3"
 val targetJavaVersion = 8
 val pluginBaseModules = base.modules.run { listOf(library, paper, actions, l10n) }
 val shadowGroup = "top.mrxiaom.sweet.autores.libs"
