@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ public class SweetAutoResidence extends BukkitPlugin {
         return (SweetAutoResidence) BukkitPlugin.getInstance();
     }
 
+    ClassLoaderWrapper selfClassLoader;
     public SweetAutoResidence() throws Exception {
         super(options()
                 .bungee(false)
@@ -43,8 +45,9 @@ public class SweetAutoResidence extends BukkitPlugin {
                 .reconnectDatabaseWhenReloadConfig(false)
                 .economy(EnumEconomy.NONE)
                 .scanIgnore("top.mrxiaom.sweet.autores.libs")
-                .libraries(true)
+                .libraries(false)
         );
+        selfClassLoader = new ClassLoaderWrapper((URLClassLoader) getClassLoader());
         scheduler = new FoliaLibScheduler(this);
         info("正在检查依赖库状态");
         File librariesDir = ClassLoaderWrapper.isSupportLibraryLoader
@@ -63,6 +66,7 @@ public class SweetAutoResidence extends BukkitPlugin {
         for (URL library : libraries) {
             this.classLoader.addURL(library);
         }
+        loadLibraries();
     }
     private IResidenceAdapter adapter;
     private final Map<String, String> builtInAdapters = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER) {{
@@ -102,6 +106,26 @@ public class SweetAutoResidence extends BukkitPlugin {
             super.onEnable();
         } else {
             Bukkit.getPluginManager().disablePlugin(this);
+        }
+    }
+
+    @Override
+    protected void loadLibraries() {
+        File librariesFolder = getLibrariesFolder();
+        if (!librariesFolder.exists()) {
+            createLibrariesFolder(librariesFolder);
+        }
+        List<File> files = listLibraries(librariesFolder);
+        for (File file : files) {
+            if (file.isDirectory() || !file.getName().endsWith(".jar")) continue;
+            try {
+                URL url = file.toURI().toURL();
+                this.selfClassLoader.addURL(url);
+                info("已加载外部模块 " + file.getName());
+                afterLoadLib(file);
+            } catch (Throwable t) {
+                warn("无法加载外部模块 " + file.getName(), t);
+            }
         }
     }
 
