@@ -1,15 +1,17 @@
+import top.mrxiaom.gradle.LibraryHelper
+
 plugins {
     java
     `maven-publish`
-    id("com.gradleup.shadow") version "8.3.0"
+    id("com.gradleup.shadow") version "9.3.0"
     id("com.github.gmazzo.buildconfig") version "5.6.7"
 }
 
 buildscript {
     repositories.mavenCentral()
-    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.7")
+    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.21")
 }
-val base = top.mrxiaom.gradle.LibraryHelper(project)
+val base = LibraryHelper(project)
 
 group = "top.mrxiaom.sweet.autores"
 version = "1.0.3"
@@ -31,19 +33,18 @@ dependencies {
     // compileOnly("org.spigotmc:spigot:1.20") // NMS
 
     compileOnly("net.milkbowl.vault:VaultAPI:1.7")
-    compileOnly("me.clip:placeholderapi:2.11.6")
-    compileOnly("com.github.Zrips:CMILib:1.4.7.4")
-    compileOnly("org.jetbrains:annotations:24.0.0")
+    compileOnly("me.clip:placeholderapi:2.12.2")
+    compileOnly(base.depend.annotations)
+
     compileOnly(files("libs/Dominion.jar"))
-    compileOnly(files("libs/Residence.jar"))
+    compileOnly("com.github.Zrips:CMILib:1.5.6.3")
+    compileOnly("com.github.Zrips:Residence:6.0.0.1") { isTransitive = false }
 
-    base.library("net.kyori:adventure-api:4.22.0")
-    base.library("net.kyori:adventure-platform-bukkit:4.4.0")
-    base.library("net.kyori:adventure-text-minimessage:4.22.0")
-    base.library("net.kyori:adventure-text-serializer-plain:4.22.0")
+    base.library(LibraryHelper.adventure("4.22.0"))
+    base.collectPluginHolders()
 
-    implementation("com.github.technicallycoded:FoliaLib:0.4.4")
-    implementation("de.tr7zw:item-nbt-api:2.15.5")
+    implementation("com.github.technicallycoded:FoliaLib:0.4.4") { isTransitive = false }
+    implementation(base.depend.nbtapi)
     for (artifact in pluginBaseModules) {
         implementation(artifact)
     }
@@ -58,55 +59,19 @@ buildConfig {
     buildConfigField("java.time.Instant", "BUILD_TIME", "java.time.Instant.ofEpochSecond(${System.currentTimeMillis() / 1000L}L)")
     buildConfigField("String[]", "RESOLVED_LIBRARIES", base.join())
 }
-java {
-    val javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
-    }
-    withSourcesJar()
-}
+
+LibraryHelper.initJava(project, base, targetJavaVersion, true)
+LibraryHelper.initPublishing(project)
+
 tasks {
     shadowJar {
+        configurations.add(project.configurations.runtimeClasspath.get())
         mapOf(
             "top.mrxiaom.pluginbase" to "base",
             "de.tr7zw.changeme.nbtapi" to "nbtapi",
             "com.tcoded.folialib" to "folialib",
         ).forEach { (original, target) ->
             relocate(original, "$shadowGroup.$target")
-        }
-    }
-    val copyTask = create<Copy>("copyBuildArtifact") {
-        dependsOn(shadowJar)
-        from(shadowJar.get().outputs)
-        rename { "${project.name}-$version.jar" }
-        into(rootProject.file("out"))
-    }
-    build {
-        dependsOn(copyTask)
-    }
-    withType<JavaCompile>().configureEach {
-        options.encoding = "UTF-8"
-        if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible) {
-            options.release.set(targetJavaVersion)
-        }
-    }
-    processResources {
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-        from(sourceSets.main.get().resources.srcDirs) {
-            expand(mapOf("version" to version))
-            include("plugin.yml")
-        }
-    }
-}
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = project.group.toString()
-            artifactId = rootProject.name
-            version = project.version.toString()
-
-            artifact(tasks["shadowJar"]).classifier = null
-            artifact(tasks["sourcesJar"])
         }
     }
 }

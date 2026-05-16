@@ -61,7 +61,7 @@ public class Item {
         section = config.getConfigurationSection("conditions");
         if (section != null) for (String key : section.getKeys(false)) {
             if (key.equals("deny-commands")) {
-                conditionsDenyCommands.addAll(loadActions(section.getStringList(key)));
+                conditionsDenyCommands.addAll(loadActions(section, key));
                 continue;
             }
             String typeStr = section.getString(key + ".type");
