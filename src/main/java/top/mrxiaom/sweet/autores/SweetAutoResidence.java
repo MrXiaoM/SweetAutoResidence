@@ -15,7 +15,6 @@ import top.mrxiaom.pluginbase.utils.ConfigUtils;
 import top.mrxiaom.pluginbase.utils.depend.PAPI;
 import top.mrxiaom.pluginbase.utils.inventory.InventoryFactory;
 import top.mrxiaom.pluginbase.utils.item.ItemEditor;
-import top.mrxiaom.pluginbase.utils.scheduler.FoliaLibScheduler;
 import top.mrxiaom.sweet.autores.api.IResidenceAdapter;
 import top.mrxiaom.sweet.autores.impl.dominion.AdapterDominion;
 import top.mrxiaom.sweet.autores.impl.residence.AdapterResidence;
@@ -25,7 +24,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +34,6 @@ public class SweetAutoResidence extends BukkitPlugin {
         return (SweetAutoResidence) BukkitPlugin.getInstance();
     }
 
-    ClassLoaderWrapper selfClassLoader;
     public SweetAutoResidence() throws Exception {
         super(options()
                 .bungee(false)
@@ -47,8 +44,6 @@ public class SweetAutoResidence extends BukkitPlugin {
                 .scanIgnore("top.mrxiaom.sweet.autores.libs")
                 .libraries(false)
         );
-        selfClassLoader = new ClassLoaderWrapper((URLClassLoader) getClassLoader());
-        scheduler = new FoliaLibScheduler(this);
 
         try {
             //noinspection ResultOfMethodCallIgnored
@@ -126,7 +121,7 @@ public class SweetAutoResidence extends BukkitPlugin {
             if (file.isDirectory() || !file.getName().endsWith(".jar")) continue;
             try {
                 URL url = file.toURI().toURL();
-                this.selfClassLoader.addURL(url);
+                this.classLoader.addURL(url);
                 info("已加载外部模块 " + file.getName());
                 afterLoadLib(file);
             } catch (Throwable t) {
