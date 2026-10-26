@@ -14,6 +14,14 @@ size:
   y: 10
   z: 10
 
+# 选取区域要往哪个方向偏移多少格？
+offset:
+  x: 0
+  y: 0
+  z: 0
+  # 向玩家的水平面向方向偏移
+  front: 0
+
 # 创建条件
 conditions:
   # 条件名称，唯一，不能为 deny-commands

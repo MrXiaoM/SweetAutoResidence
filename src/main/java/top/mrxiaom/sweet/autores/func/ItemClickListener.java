@@ -147,6 +147,7 @@ public class ItemClickListener extends AbstractModule implements Listener {
             caches.remove(uuid);
             Selection selection = plugin.getAdapter().genAutoSelection(player, item.sizeX, item.sizeY, item.sizeZ);
             if (selection == null) return true;
+            item.applyOffset(selection, player);
             caches.put(uuid, new SelectionCache(player, player.getWorld(), item.id, selection));
             Messages.selection__success.tm(player);
             plugin.getAdapter().showSelection(player, selection);

@@ -10,7 +10,7 @@ import cn.lunadeer.dominion.configuration.Configuration;
 import cn.lunadeer.dominion.configuration.Limitation;
 import cn.lunadeer.dominion.misc.Others;
 import cn.lunadeer.dominion.providers.DominionProvider;
-import cn.lunadeer.dominion.utils.ParticleUtil;
+import cn.lunadeer.dominion.utils.BorderRenderUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -127,6 +127,6 @@ public class AdapterDominion extends AbstractPluginHolder implements IResidenceA
     @Override
     public void showSelection(Player player, Selection area) {
         CuboidDTO cuboidDTO = (CuboidDTO) area.tag;
-        ParticleUtil.showBorder(player, player.getWorld(), cuboidDTO);
+        BorderRenderUtil.showBorder(player, player.getWorld(), cuboidDTO, BorderRenderUtil.DEFAULT_GLOW_COLOR);
     }
 }
