@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.pluginbase.func.AutoRegister;
@@ -61,11 +62,20 @@ public class CommandMain extends AbstractModule implements CommandExecutor, TabC
                     return Messages.player_only.tm(sender);
                 }
             }
-            ItemStackUtil.giveItemToPlayer(player, item.generateItem(i, bind ? player : null));
-            return Messages.command__give_success.tm(sender,
-                    Pair.of("%player%", player.getName()),
-                    Pair.of("%item%", item.itemDisplay),
-                    Pair.of("%count%", i));
+            // 物品栏只能在目标玩家所属的 region 线程访问，
+            // 控制台执行时(全局区域线程)或跨区域发道具会抛异常
+            final boolean bindToPlayer = bind;
+            plugin.getScheduler().runAtEntity(player, p -> {
+                ItemStack itemStack = item.generateItem(i, bindToPlayer ? p : null);
+                if (itemStack != null) {
+                    ItemStackUtil.giveItemToPlayer(p, itemStack);
+                }
+                Messages.command__give_success.tm(sender,
+                        Pair.of("%player%", p.getName()),
+                        Pair.of("%item%", item.itemDisplay),
+                        Pair.of("%count%", i));
+            });
+            return true;
         }
         if (args.length == 1 && "reload".equalsIgnoreCase(args[0]) && sender.isOp()) {
             plugin.reloadConfig();
