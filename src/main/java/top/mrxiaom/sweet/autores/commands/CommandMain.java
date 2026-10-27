@@ -1,6 +1,7 @@
 package top.mrxiaom.sweet.autores.commands;
 
 import com.google.common.collect.Lists;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -32,7 +33,8 @@ public class CommandMain extends AbstractModule implements CommandExecutor, TabC
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label,
+            @NotNull String[] args) {
         if (args.length >= 2 && "give".equalsIgnoreCase(args[0]) && sender.isOp()) {
             Item item = ItemsManager.inst().get(args[1]);
             if (item == null) {
@@ -88,21 +90,36 @@ public class CommandMain extends AbstractModule implements CommandExecutor, TabC
     private static final List<String> listArg0 = Lists.newArrayList();
     private static final List<String> listOpArg0 = Lists.newArrayList(
             "give", "reload");
+    private static final List<String> giveCounts = Lists.newArrayList(
+            "1", "16", "64");
+    private static final List<String> bindFlags = Lists.newArrayList(
+            "-b", "--bind");
+
     @Nullable
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias,
+            @NotNull String[] args) {
         if (args.length == 1) {
             return startsWith(sender.isOp() ? listOpArg0 : listArg0, args[0]);
         }
+        if (!"give".equalsIgnoreCase(args[0]) || !sender.isOp()) {
+            return emptyList;
+        }
         if (args.length == 2) {
-            if ("give".equalsIgnoreCase(args[0]) && sender.isOp()) {
-                return startsWith(ItemsManager.inst().keys(), args[1]);
-            }
+            return startsWith(ItemsManager.inst().keys(), args[1]);
+        }
+        if (args.length == 3) {
+            return startsWith(giveCounts, args[2]);
         }
         if (args.length == 4) {
-            if ("give".equalsIgnoreCase(args[0]) && sender.isOp()) {
-                return null;
+            List<String> players = new ArrayList<>();
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                players.add(player.getName());
             }
+            return startsWith(players, args[3]);
+        }
+        if (args.length == 5) {
+            return startsWith(bindFlags, args[4]);
         }
         return emptyList;
     }
@@ -110,10 +127,12 @@ public class CommandMain extends AbstractModule implements CommandExecutor, TabC
     public List<String> startsWith(Collection<String> list, String s) {
         return startsWith(null, list, s);
     }
+
     public List<String> startsWith(String[] addition, Collection<String> list, String s) {
         String s1 = s.toLowerCase();
         List<String> stringList = new ArrayList<>(list);
-        if (addition != null) stringList.addAll(0, Lists.newArrayList(addition));
+        if (addition != null)
+            stringList.addAll(0, Lists.newArrayList(addition));
         stringList.removeIf(it -> !it.toLowerCase().startsWith(s1));
         return stringList;
     }
