@@ -22,7 +22,6 @@ import top.mrxiaom.sweet.autores.api.Selection;
 import top.mrxiaom.sweet.autores.func.entry.Item;
 import top.mrxiaom.sweet.autores.func.entry.SelectionCache;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -31,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @AutoRegister
 public class ItemClickListener extends AbstractModule implements Listener {
     private final Map<UUID, SelectionCache> caches = new ConcurrentHashMap<>();
-    private final Set<UUID> lock = new HashSet<>();
+    private final Set<UUID> lock = ConcurrentHashMap.newKeySet();
     public ItemClickListener(SweetAutoResidence plugin) {
         super(plugin);
         registerEvents();
@@ -87,16 +86,21 @@ public class ItemClickListener extends AbstractModule implements Listener {
         if (item == null) return;
         e.setCancelled(true);
         UUID uuid = player.getUniqueId();
-        if (lock.contains(uuid)) return;
-        lock.add(uuid);
-        plugin.getScheduler().runTaskAsync(() -> {
-            if (handleClick(player, uuid, item, itemStack)) {
+        if (!lock.add(uuid)) return;
+        // 该流程会读写玩家实体数据与领地插件(Residence/Dominion)的内部结构，
+        // 在 Folia 上必须在玩家所属的 region 线程执行。
+        // 用 runTask 会跑到全局区域线程，被领地插件内部锁阻塞，
+        // 从而触发 "Global region has not responded" 看门狗。
+        plugin.getScheduler().runAtEntity(player, () -> {
+            try {
+                handleClick(player, uuid, item, itemStack);
+            } finally {
                 lock.remove(uuid);
             }
         });
     }
 
-    private boolean handleClick(Player player, UUID uuid, Item item, ItemStack itemStack) {
+    private void handleClick(Player player, UUID uuid, Item item, ItemStack itemStack) {
         if (NBT.get(itemStack, nbt -> {
             UUID bindUUID = nbt.getUUID("SWEET_AUTO_RESIDENCE_BIND_UUID");
             String bindName = nbt.getString("SWEET_AUTO_RESIDENCE_BIND_NAME");
@@ -104,54 +108,49 @@ public class ItemClickListener extends AbstractModule implements Listener {
             if (player.getUniqueId().equals(bindUUID) || player.getName().equals(bindName)) return false;
             Messages.item__bind_deny.tm(player);
             return true;
-        })) return true;
+        })) return;
         if (player.isSneaking()) { // 确认圈地
             SelectionCache cache = caches.remove(uuid);
             if (cache == null || !cache.isValid(player, item)) {
                 Messages.create__no_selection.tm(player);
-                return true;
+                return;
             }
-            if (item.checkDeny(player)) return true;
+            if (item.checkDeny(player)) return;
             if (plugin.getAdapter().hasReachResCountLimit(player)) {
                 Messages.create__no_available.tm(player);
-                return true;
+                return;
             }
             String resName = item.genResName(plugin.getAdapter(), player);
             if (resName == null) {
                 Messages.create__already_exists.tm(player);
-                return true;
+                return;
             }
             if (resName.trim().isEmpty()) {
                 Messages.create__empty_name.tm(player);
-                return true;
+                return;
             }
-            plugin.getScheduler().runTask(() -> {
-                int amount = itemStack.getAmount();
-                if (amount <= 1) {
-                    itemStack.setAmount(0);
-                    itemStack.setType(Material.AIR);
-                } else {
-                    itemStack.setAmount(amount - 1);
-                }
-                try {
-                    plugin.getAdapter().createResidence(player, resName, cache.selection);
-                    item.executeUseCommands(player, resName);
-                } catch (Throwable t) {
-                    warn(t);
-                    Messages.create__failed.tm(player);
-                }
-                lock.remove(uuid);
-            });
-            return false;
+            int amount = itemStack.getAmount();
+            if (amount <= 1) {
+                itemStack.setAmount(0);
+                itemStack.setType(Material.AIR);
+            } else {
+                itemStack.setAmount(amount - 1);
+            }
+            try {
+                plugin.getAdapter().createResidence(player, resName, cache.selection);
+                item.executeUseCommands(player, resName);
+            } catch (Throwable t) {
+                warn(t);
+                Messages.create__failed.tm(player);
+            }
         } else { // 选择区域
             caches.remove(uuid);
             Selection selection = plugin.getAdapter().genAutoSelection(player, item.sizeX, item.sizeY, item.sizeZ);
-            if (selection == null) return true;
+            if (selection == null) return;
             item.applyOffset(selection, player);
             caches.put(uuid, new SelectionCache(player, player.getWorld(), item.id, selection));
             Messages.selection__success.tm(player);
             plugin.getAdapter().showSelection(player, selection);
-            return true;
         }
     }
 }
